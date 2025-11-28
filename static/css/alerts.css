@@ -1,0 +1,139 @@
+/* ========== SISTEMA DE ALERTAS/FLASH MESSAGES ========== */
+
+.flash-messages {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 9999;
+  max-width: 420px;
+  width: 100%;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 6px 24px rgba(26, 31, 46, 0.15);
+  animation: slideInRight 0.4s ease;
+  position: relative;
+  border-left: 4px solid;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+/* Ícone do alerta */
+.alert-icon {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Mensagem do alerta */
+.alert-message {
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* Botão de fechar */
+.alert-close,
+.alert .close,
+.alert .btn-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.alert-close:hover,
+.alert .close:hover,
+.alert .btn-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+/* Tipos de alertas */
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+  border-left-color: #10b981;
+}
+
+.alert-danger,
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border-left-color: #ef4444;
+}
+
+.alert-warning {
+  background: #fef3c7;
+  color: #92400e;
+  border-left-color: #f59e0b;
+}
+
+.alert-info {
+  background: #dbeafe;
+  color: #1e40af;
+  border-left-color: #3b82f6;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .flash-messages {
+    top: 70px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+  }
+  
+  .alert {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Se os alertas estiverem dentro do conteúdo (não fixos) */
+.container .alert,
+.main-content .alert {
+  position: relative;
+  margin-bottom: 20px;
+}

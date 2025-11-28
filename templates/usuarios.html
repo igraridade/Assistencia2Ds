@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}IGECH TECH — Usuários{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-usuarios">
+  <div class="page-header">
+    <div>
+      <h1 class="hero-title">Usuários</h1>
+      <p class="hero-desc">Acompanhe, filtre e gerencie todos os usuários cadastrados no sistema</p>
+    </div>
+    <button class="btn-add-usuario" id="btnAddUsuario" type="button">
+      <span class="btn-icon">+</span>
+      Novo Usuário
+    </button>
+  </div>
+
+  <section class="usuarios-summary">
+    <div class="summary-card"><span class="summary-icon summary-violet"></span>
+      <div>
+        <div class="summary-value" id="total-usuarios">0</div>
+        <div class="summary-label">Total de Usuários</div>
+      </div>
+    </div>
+    <div class="summary-card"><span class="summary-icon summary-blue"></span>
+      <div>
+        <div class="summary-value" id="usuarios-ativos">0</div>
+        <div class="summary-label">Ativos</div>
+      </div>
+    </div>
+    <div class="summary-card"><span class="summary-icon summary-indigo"></span>
+      <div>
+        <div class="summary-value" id="usuarios-admin">0</div>
+        <div class="summary-label">Administradores</div>
+      </div>
+    </div>
+    <div class="summary-card"><span class="summary-icon summary-cyan"></span>
+      <div>
+        <div class="summary-value" id="usuarios-normais">0</div>
+        <div class="summary-label">Usuários Comuns</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="filter-section">
+    <div class="search-box">
+      <span class="search-icon"></span>
+      <input type="text" placeholder="Buscar por nome, e-mail ou perfil..." class="search-input" id="searchUsuario">
+    </div>
+    <div class="filter-controls">
+      <select class="filter-select" id="filterPerfil">
+        <option value="">Todos os Perfis</option>
+        <option value="admin">Administrador</option>
+        <option value="usuario">Usuário Comum</option>
+      </select>
+      <select class="filter-select" id="filterStatus">
+        <option value="">Todos os Status</option>
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="usuarios-table-section">
+    <div class="table-header">
+      <h2 class="section-title">Lista de Usuários</h2>
+      <span class="table-count" id="tableCountUsuarios">0 usuários encontrados</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="usuarios-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th>
+            <th>Perfil</th><th>Status</th><th>Cadastro</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="usuariosTableBody">
+          <tr class="empty-state">
+            <td colspan="8">
+              <div class="empty-message">
+                <span class="empty-icon"></span>
+                <p>Nenhum usuário cadastrado ainda</p>
+                <button class="btn-empty-action" id="btnAddPrimeiroUsuario" type="button">Cadastrar Primeiro Usuário</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="info-cards">
+    <div class="info-card"><span class="info-icon info-violet"></span>
+      <div>
+        <div class="info-title">Permissões e Controle</div>
+        <div class="info-desc">Gerencie perfis, permissões e acesso dos usuários facilmente</div>
+      </div>
+    </div>
+    <div class="info-card"><span class="info-icon info-blue"></span>
+      <div>
+        <div class="info-title">Atividade dos Usuários</div>
+        <div class="info-desc">Acompanhe logins, últimas atividades e status dos usuários</div>
+      </div>
+    </div>
+    <div class="info-card"><span class="info-icon info-cyan"></span>
+      <div>
+        <div class="info-title">Relatórios & Exportação</div>
+        <div class="info-desc">Exportação rápida de dados para relatórios personalizados</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!--TELA DE CADASTRO-->
+
+<div id="modalUsuario" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalUsuarioTitle" class="modal-title">Cadastrar Usuário</h2>
+      <button type="button" class="close" id="closeModalUsuario" aria-label="Fechar">&times;</button>
+    </div>
+
+    <form id="formUsuario" class="modal-form">
+      <div class="form-group">
+        <label for="usuarioNome">Nome Completo *</label>
+        <input
+          type="text"
+          id="usuarioNome"
+          class="form-input"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="usuarioEmail">E-mail *</label>
+        <input
+          type="email"
+          id="usuarioEmail"
+          class="form-input"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="usuarioTelefone">Telefone *</label>
+        <input
+          type="tel"
+          id="usuarioTelefone"
+          class="form-input"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="usuarioSenha">Senha</label>
+        <input
+          type="password"
+          id="usuarioSenha"
+          class="form-input"
+          placeholder="Deixe em branco para manter a atual"
+        >
+      </div>
+
+      <div class="form-group-checkbox">
+        <input type="checkbox" id="usuarioAdmin">
+        <label for="usuarioAdmin">Usuário Administrador</label>
+      </div>
+    </form>
+      <div class="modal-actions">
+        <button type="button" id="btnCancelUsuario" class="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn-save">Salvar</button>
+      </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
+{% endblock %}

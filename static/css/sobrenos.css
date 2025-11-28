@@ -1,0 +1,70 @@
+:root {
+  --azul-navy: #0a1f44;
+  --azul-escuro: #1a3a6e;
+  --azul-royal: #2463eb;
+  --azul-eletrico: #3b8cff;
+  --azul-ceu: #60b6ff;
+  --azul-claro: #e3f2ff;
+  --azul-indigo: #6366f1;
+  --verde-sucesso: #10b981;
+  --verde-claro: #d1fae5;
+  --branco: #ffffff;
+  --cinza-escuro: #2d3748;
+  --cinza-medio: #5a6478;
+  --violet: #8b5cf6;
+}
+.main-sobrenos {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 18px 16px 18px;
+  background: var(--branco);
+  min-height: calc(100vh - 140px);
+}
+/* HEADER */
+.sobre-header {text-align: center; margin-bottom: 38px;}
+.hero-title { font-size: 2.4rem; font-weight: 800; color: var(--preto); margin: 0 0 10px 0;}
+.hero-desc { color: var(--cinza-medio); font-size: 1.22rem; margin-bottom: 18px; font-weight: 400;}
+/* MISSÃO E HISTÓRIA */
+.missao-historia {display: flex; gap: 28px; margin-bottom: 36px; flex-wrap: wrap;}
+.missao-card {
+  background: var(--branco);
+  border: 2px solid var(--azul-claro);
+  border-radius: 14px; flex: 1; min-width: 240px; padding: 24px 20px;
+  box-shadow: 0 3px 18px #2463eb18; display: flex; flex-direction: column; align-items: flex-start;
+}
+.sobre-icon {
+  width: 38px; height: 38px; border-radius: 50%; display: inline-block; margin-bottom: 16px;
+}
+.sobre-blue { background: linear-gradient(135deg, var(--azul-eletrico) 0%, var(--azul-ceu) 100%);}
+.sobre-cyan { background: linear-gradient(135deg, #06b6d4 0%, #67e8f9 100%);}
+.sobre-violet { background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);}
+.sobre-title { font-size: 1.24rem; color: var(--azul-navy); font-weight: 700; margin-bottom: 5px;}
+.sobre-desc { color: var(--cinza-medio); font-size: 1rem; margin-bottom: 6px; font-weight: 400;}
+.negrito { font-weight: 700; color: var(--preto); }
+/* EQUIPE */
+.time-equipe { margin-bottom: 36px;}
+.equipe-cards { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 8px;}
+.equipe-card {
+  background: var(--branco);
+  border: 1.5px solid var(--azul-claro);
+  border-radius: 12px; box-shadow: 0 2px 12px #2463eb11;
+  padding: 14px 22px; display: flex; flex-direction: column; align-items: center; min-width: 190px;
+}
+.avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--azul-claro); margin-bottom: 7px;}
+.nome-equipe { font-size: 1.1rem; font-weight: 700; color: var(--preto); margin-bottom: 4px;}
+.cargo-equipe { color: var(--cinza-medio); font-size: 0.97rem; margin-bottom: 2px;}
+.badge { padding: 4px 12px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-top: 2px;}
+.badge-azul { background: var(--azul-claro); color: var(--azul-escuro);}
+.badge-cyan { background: #e0f7fa; color: #06b6d4;}
+.badge-violet { background: #ede9fe; color: var(--violet);}
+.badge-indigo { background: #e0e7ff; color: var(--azul-indigo); }
+/* CONTATO */
+.sobre-contato { background: var(--azul-claro); padding: 22px; border-radius: 14px; margin-bottom: 20px;}
+.contato-info { display: flex; gap: 22px; margin-top: 12px; flex-wrap: wrap;}
+.contato-info span, .contato-info a { font-size: 1rem; color: var(--azul-escuro); text-decoration: none;}
+/* RESPONSIVO */
+@media (max-width: 950px){
+  .missao-historia { flex-direction: column; gap: 16px;}
+  .equipe-cards { flex-direction: column; gap: 14px;}
+  .main-sobrenos { padding: 18px 6vw;}
+}

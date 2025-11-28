@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}IGECH TECH — Sobre Nós{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sobrenos.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-sobrenos">
+  <section class="sobre-header">
+    <h1 class="hero-title">Sobre Nós</h1>
+    <p class="hero-desc">
+      Nosso compromisso é transformar a gestão de serviços e equipes, oferecendo tecnologia acessível, inovadora e transparente para empresas em evolução.
+    </p>
+  </section>
+
+  <section class="missao-historia">
+    <div class="missao-card">
+      <span class="sobre-icon sobre-blue"></span>
+      <h2 class="sobre-title">Nossa Missão</h2>
+      <p class="sobre-desc">
+        Oferecer tecnologia acessível e inovadora para gestão de serviços e equipes, com transparência, desempenho e experiência de excelência.
+      </p>
+    </div>
+    <div class="missao-card">
+      <span class="sobre-icon sobre-cyan"></span>
+      <h2 class="sobre-title">Nossa História</h2>
+      <p class="sobre-desc">
+        Fundado em 2025, o <span class="negrito">IGECH TECH</span> evoluiu de soluções sob medida para clientes à plataforma robusta atual, sempre buscando entregar transformação digital para pequenas e médias empresas.
+      </p>
+    </div>
+  </section>
+
+ <section class="time-equipe">
+  <h2 class="sobre-title">Equipe</h2>
+  <div class="equipe-cards">
+    <div class="equipe-card">
+      <span class="avatar"></span>
+      <span class="nome-equipe">Igor Oliveira</span>
+      <span class="cargo-equipe badge badge-azul">Fundador • Desenvolvedor</span>
+    </div>
+    <div class="equipe-card">
+      <span class="avatar"></span>
+      <span class="nome-equipe">Caio Lacerda</span>
+      <span class="cargo-equipe badge badge-cyan">Co-Fundador • Cientista de Dados</span>
+    </div>
+    <div class="equipe-card">
+      <span class="avatar"></span>
+      <span class="nome-equipe">Enzo Henrique</span>
+      <span class="cargo-equipe badge badge-violet">Gerente • Design Gráfico</span>
+    </div>
+    <div class="equipe-card">
+      <span class="avatar"></span>
+      <span class="nome-equipe">Gabriel Henrique</span>
+      <span class="cargo-equipe badge badge-azul">CEO • Analista de Suporte Técnico</span>
+    </div>
+  </div>
+</section>
+
+
+  <section class="sobre-contato">
+    <h2 class="sobre-title">Contato</h2>
+    <p class="sobre-desc">
+      Dúvidas, sugestões ou parcerias? Fale com nosso time:
+    </p>
+    <div class="contato-info">
+      <span class="email">
+        <strong>Email:</strong>
+        <a href="mailto:igor.silv802@gmail.com">igor.silv802@gmail.com</a>
+      </span>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/modals.js', v=1) }}"></script>
+{% endblock %}

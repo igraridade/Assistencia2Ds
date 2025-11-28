@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}IGECH TECH — Empresas{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/empresas.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-empresas">
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h1 class="hero-title">Empresas</h1>
+      <p class="hero-desc">Gerencie e acompanhe todas as empresas cadastradas no sistema</p>
+    </div>
+    <button type="button" id="btnAddEmpresa" class="btn-add-empresa">
+      <span class="btn-icon">+</span>
+      Nova Empresa
+    </button>
+  </div>
+
+  <!-- CARDS RESUMO -->
+  <div class="empresas-summary">
+    <div class="summary-card">
+      <div class="summary-icon summary-violet">📊</div>
+      <div>
+        <div class="summary-value" id="total-empresas">0</div>
+        <div class="summary-label">Total de Empresas</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon summary-blue">✓</div>
+      <div>
+        <div class="summary-value" id="empresas-ativas">0</div>
+        <div class="summary-label">Ativas</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon summary-cyan">📋</div>
+      <div>
+        <div class="summary-value" id="empresas-contratos">0</div>
+        <div class="summary-label">Com Contrato</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon summary-violet">⚠</div>
+      <div>
+        <div class="summary-value" id="empresas-sem-contrato">0</div>
+        <div class="summary-label">Sem Contrato</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filter-section">
+    <div class="search-box">
+      <div class="search-icon"></div>
+      <input 
+        type="text" 
+        id="searchEmpresa" 
+        class="search-input" 
+        placeholder="Buscar por nome, CNPJ ou email..."
+      >
+    </div>
+    <select id="filterContrato" class="filter-select">
+      <option value="">Todos os Contratos</option>
+      <option value="ativo">Com Contrato</option>
+      <option value="inativo">Sem Contrato</option>
+    </select>
+  </div>
+
+  <!-- TABELA -->
+  <div class="empresas-table-section">
+    <div class="table-header">
+      <h2 class="section-title">Lista de Empresas</h2>
+      <span class="table-count" id="tableCountEmpresas">0 empresas encontradas</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="empresas-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>NOME</th>
+            <th>CNPJ</th>
+            <th>TELEFONE</th>
+            <th>ENDEREÇO</th>
+            <th>CONTRATOS</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody id="empresasTableBody">
+          <tr class="empty-state">
+            <td colspan="7">Nenhuma empresa cadastrada ainda</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL EMPRESA -->
+<div id="modalEmpresa" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalEmpresaTitle" class="modal-title">Cadastrar Empresa</h2>
+      <button type="button" id="closeModalEmpresa" class="modal-close">✕</button>
+    </div>
+    <form id="formEmpresa" class="modal-form">
+      <div id="empresaError" class="error-text"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaNome">Nome Empresa *</label>
+          <input type="text" id="empresaNome" required>
+        </div>
+        <div class="form-group">
+          <label for="empresaCnpj">CNPJ *</label>
+          <input type="text" id="empresaCnpj" maxlength="18" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaEmail">E-mail *</label>
+          <input type="email" id="empresaEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="empresaTelefone">Telefone *</label>
+          <input type="text" id="empresaTelefone" maxlength="15" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaCep">CEP</label>
+          <input type="text" id="empresaCep" maxlength="9" placeholder="12345-678">
+        </div>
+        <div class="form-group" style="align-self: flex-end;">
+          <button type="button" id="btnBuscarCep" class="btn-search-cep">Buscar CEP</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaTipoLogradouro">Tipo Logradouro</label>
+          <select id="empresaTipoLogradouro">
+            <option value="">Selecione...</option>
+            <option value="Avenida">Avenida</option>
+            <option value="Rua">Rua</option>
+            <option value="Travessa">Travessa</option>
+            <option value="Alameda">Alameda</option>
+            <option value="Praça">Praça</option>
+            <option value="Rodovia">Rodovia</option>
+            <option value="Estrada">Estrada</option>
+            <option value="Viela">Viela</option>
+            <option value="Largo">Largo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="empresaNomeLogradouro">Nome Logradouro</label>
+          <input type="text" id="empresaNomeLogradouro">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaNumero">Número</label>
+          <input type="text" id="empresaNumero">
+        </div>
+        <div class="form-group">
+          <label for="empresaComplemento">Complemento</label>
+          <input type="text" id="empresaComplemento">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaBairro">Bairro</label>
+          <input type="text" id="empresaBairro">
+        </div>
+        <div class="form-group">
+          <label for="empresaCidade">Cidade</label>
+          <input type="text" id="empresaCidade">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="empresaEstado">Estado</label>
+          <select id="empresaEstado">
+            <option value="">Selecione...</option>
+            <option value="AC">Acre</option>
+            <option value="AL">Alagoas</option>
+            <option value="AP">Amapá</option>
+            <option value="AM">Amazonas</option>
+            <option value="BA">Bahia</option>
+            <option value="CE">Ceará</option>
+            <option value="DF">Distrito Federal</option>
+            <option value="ES">Espírito Santo</option>
+            <option value="GO">Goiás</option>
+            <option value="MA">Maranhão</option>
+            <option value="MT">Mato Grosso</option>
+            <option value="MS">Mato Grosso do Sul</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="PA">Pará</option>
+            <option value="PB">Paraíba</option>
+            <option value="PR">Paraná</option>
+            <option value="PE">Pernambuco</option>
+            <option value="PI">Piauí</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="RN">Rio Grande do Norte</option>
+            <option value="RS">Rio Grande do Sul</option>
+            <option value="RO">Rondônia</option>
+            <option value="RR">Roraima</option>
+            <option value="SC">Santa Catarina</option>
+            <option value="SP">São Paulo</option>
+            <option value="SE">Sergipe</option>
+            <option value="TO">Tocantins</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btnCancelEmpresa" class="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn-save">Salvar Empresa</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL USUÁRIOS -->
+<div id="modalUsuariosEmpresa" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Usuários da Empresa</h2>
+      <button type="button" id="closeModalUsuariosEmpresa" class="modal-close">✕</button>
+    </div>
+    <div id="usuariosEmpresaCardBody" class="modal-form">
+      <!-- Cards de usuários serão inseridos aqui -->
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/empresas.js') }}"></script>
+{% endblock %}

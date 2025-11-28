@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}IGECH TECH — Contratar Serviço{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/contratar_servico.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-contratar">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">🚀 Contratar Serviço</h1>
+            <p class="hero-desc">Escolha o serviço que você precisa e conecte-se com nossos melhores técnicos</p>
+            {% if user_name %}
+            <div class="hero-user-badge">
+                <span class="user-icon">👤</span>
+                <span class="user-name">{{ user_name }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="services-section">
+        <div class="services-grid">
+            <!-- Card: Hardware -->
+            <div class="service-card" data-categoria="Hardware">
+                <div class="service-icon-wrapper hardware">
+                    <span class="service-icon">🔧</span>
+                </div>
+                <h2 class="service-title">Hardware</h2>
+                <p class="service-description">Manutenção e reparo de equipamentos físicos</p>
+                <ul class="service-features">
+                    <li>✅ Montagem e upgrade de PCs</li>
+                    <li>✅ Troca de componentes</li>
+                    <li>✅ Manutenção preventiva</li>
+                    <li>✅ Diagnóstico de falhas</li>
+                </ul>
+                <button class="btn-contratar" onclick="abrirModalTecnicos('Hardware')">
+                    Contratar Técnico
+                </button>
+            </div>
+
+            <!-- Card: Software -->
+            <div class="service-card" data-categoria="Software">
+                <div class="service-icon-wrapper software">
+                    <span class="service-icon">💻</span>
+                </div>
+                <h2 class="service-title">Software</h2>
+                <p class="service-description">Instalação e configuração de sistemas</p>
+                <ul class="service-features">
+                    <li>✅ Instalação de sistemas operacionais</li>
+                    <li>✅ Configuração de programas</li>
+                    <li>✅ Remoção de vírus e malware</li>
+                    <li>✅ Otimização de desempenho</li>
+                </ul>
+                <button class="btn-contratar" onclick="abrirModalTecnicos('Software')">
+                    Contratar Técnico
+                </button>
+            </div>
+
+            <!-- Card: Redes -->
+            <div class="service-card" data-categoria="Redes">
+                <div class="service-icon-wrapper redes">
+                    <span class="service-icon">🌐</span>
+                </div>
+                <h2 class="service-title">Redes</h2>
+                <p class="service-description">Configuração e manutenção de redes</p>
+                <ul class="service-features">
+                    <li>✅ Instalação de redes cabeadas</li>
+                    <li>✅ Configuração de Wi-Fi</li>
+                    <li>✅ Segurança de rede</li>
+                    <li>✅ Compartilhamento de recursos</li>
+                </ul>
+                <button class="btn-contratar" onclick="abrirModalTecnicos('Redes')">
+                    Contratar Técnico
+                </button>
+            </div>
+
+            <!-- Card: Suporte -->
+            <div class="service-card" data-categoria="Suporte">
+                <div class="service-icon-wrapper suporte">
+                    <span class="service-icon">🛠️</span>
+                </div>
+                <h2 class="service-title">Suporte</h2>
+                <p class="service-description">Suporte técnico e treinamento</p>
+                <ul class="service-features">
+                    <li>✅ Suporte remoto</li>
+                    <li>✅ Treinamento de usuários</li>
+                    <li>✅ Backup e recuperação</li>
+                    <li>✅ Consultoria técnica</li>
+                </ul>
+                <button class="btn-contratar" onclick="abrirModalTecnicos('Suporte')">
+                    Contratar Técnico
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Modal: Seleção de Técnico (COM SCROLL) -->
+<div id="modalTecnicos" class="modal-overlay" style="display: none;" aria-hidden="true">
+    <div class="modal-container-tecnicos">
+        <!-- Cabeçalho fixo -->
+        <div class="modal-header-tecnicos">
+            <h2 id="modalTitulo">Selecione um Técnico</h2>
+            <button type="button" class="modal-close-btn" onclick="fecharModal()" aria-label="Fechar">
+                &times;
+            </button>
+        </div>
+
+        <!-- Subtítulo -->
+        <div class="modal-subtitle">
+            <p>Escolha o técnico mais adequado para o serviço que você precisa.</p>
+        </div>
+
+        <!-- ÁREA COM SCROLL -->
+        <div id="tecnicosLista" class="tecnicos-lista-scroll">
+            <!-- Técnicos serão carregados aqui via JavaScript -->
+        </div>
+
+        <!-- Rodapé fixo -->
+        <div class="modal-footer-tecnicos">
+            <button type="button" class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Contratação -->
+<div id="modalContratacao" class="modal-overlay" style="display: none;" aria-hidden="true">
+    <div class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📝 Finalizar Contratação</h2>
+                <button class="modal-close" onclick="fecharModalContratacao()" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formContratacao" onsubmit="confirmarContratacao(event)">
+                    <!-- Técnico Selecionado -->
+                    <div class="form-group">
+                        <label>Técnico Selecionado:</label>
+                        <div id="tecnicoSelecionadoInfo" class="tecnico-info-box"></div>
+                    </div>
+
+                    <!-- CEP -->
+                    <div class="form-group">
+                        <label for="cepServico">📮 CEP: *</label>
+                        <input type="text" 
+                               id="cepServico" 
+                               name="cep" 
+                               placeholder="00000-000"
+                               maxlength="9"
+                               required>
+                        <small id="cepStatus">Digite o CEP para buscar o endereço automaticamente</small>
+                    </div>
+
+                    <!-- Endereço (auto-preenchido) -->
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 3;">
+                            <label for="logradouro">Logradouro: *</label>
+                            <input type="text" 
+                                   id="logradouro" 
+                                   name="logradouro" 
+                                   placeholder="Rua, Avenida..."
+                                   readonly
+                                   required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="numero">Número: *</label>
+                            <input type="text" 
+                                   id="numero" 
+                                   name="numero" 
+                                   placeholder="123"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="complemento">Complemento:</label>
+                            <input type="text" 
+                                   id="complemento" 
+                                   name="complemento" 
+                                   placeholder="Apto, Bloco... (opcional)">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="bairro">Bairro: *</label>
+                            <input type="text" 
+                                   id="bairro" 
+                                   name="bairro" 
+                                   placeholder="Bairro"
+                                   readonly
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 2;">
+                            <label for="cidade">Cidade: *</label>
+                            <input type="text" 
+                                   id="cidade" 
+                                   name="cidade" 
+                                   placeholder="Cidade"
+                                   readonly
+                                   required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="estado">Estado: *</label>
+                            <input type="text" 
+                                   id="estado" 
+                                   name="estado" 
+                                   placeholder="UF"
+                                   maxlength="2"
+                                   readonly
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Descrição do Problema -->
+                    <div class="form-group">
+                        <label for="descricaoProblema">📝 Descreva o Problema: *</label>
+                        <textarea id="descricaoProblema" 
+                                  name="descricao" 
+                                  placeholder="Explique detalhadamente o problema que você está enfrentando..."
+                                  required></textarea>
+                        <small>Mínimo 20 caracteres para garantir uma descrição clara</small>
+                    </div>
+
+                    <!-- Prioridade -->
+                    <div class="form-group">
+                        <label for="prioridadeServico">🚨 Prioridade:</label>
+                        <select id="prioridadeServico" name="prioridade" required>
+                            <option value="baixa">Baixa - Pode aguardar alguns dias</option>
+                            <option value="media" selected>Média - Resolver em breve</option>
+                            <option value="alta">Alta - Urgente</option>
+                            <option value="urgente">Urgente - Crítico</option>
+                        </select>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="fecharModalContratacao()">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            ✅ Confirmar Contratação
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+  <script src="{{ url_for('static', filename='js/contratar_servico.js') }}"></script>
+{% endblock %}

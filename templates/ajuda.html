@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}IGECH TECH — Ajuda{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ajuda.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-ajuda">
+  <section class="ajuda-header">
+    <h1 class="hero-title">Central de Ajuda</h1>
+    <p class="hero-desc">
+      Tire dúvidas, acesse recursos e fale com nosso time para acelerar suas soluções!
+    </p>
+  </section>
+  
+  <section class="recursos-cards">
+    <div class="recursos-card">
+      <span class="card-icon card-blue"></span>
+      <div>
+        <h2 class="recursos-title">Manual do Sistema</h2>
+        <p class="recursos-desc">Tutoriais rápidos sobre cadastro, consulta, relatórios e permissões.</p>
+      </div>
+    </div>
+    <div class="recursos-card">
+      <span class="card-icon card-cyan"></span>
+      <div>
+        <h2 class="recursos-title">FAQ — Dúvidas Frequentes</h2>
+        <p class="recursos-desc">Veja respostas sobre login, recuperação de senha, tipos de usuário e mais.</p>
+      </div>
+    </div>
+    <div class="recursos-card">
+      <span class="card-icon card-violet"></span>
+      <div>
+        <h2 class="recursos-title">Suporte Técnico</h2>
+        <p class="recursos-desc">Precisa de atendimento? Fale direto com nosso time por e-mail ou formulário.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="duvidas-rapidas">
+    <h2 class="ajuda-subtitle">Dúvidas rápidas</h2>
+    <div class="ajuda-faq">
+      <details>
+        <summary>Como recuperar minha senha?</summary>
+        <p>Na tela de login, clique em “Esqueci minha senha” e siga as instruções enviadas por e-mail.</p>
+      </details>
+      <details>
+        <summary>Como cadastrar um técnico, empresa ou serviço?</summary>
+        <p>No menu lateral, acesse o módulo desejado e clique em “Adicionar”. Preencha todos os campos obrigatórios.</p>
+      </details>
+      <details>
+        <summary>Como alterar permissões de usuários?</summary>
+        <p>Somente administradores podem mudar perfis no menu Usuários. Basta clicar em “Editar” e definir o novo papel.</p>
+      </details>
+      <details>
+        <summary>Quais canais de contato estão disponíveis?</summary>
+        <p>Acesse a seção “Suporte Técnico” acima, envie sua dúvida pelo formulário ou e-mail direto: <b>suporte@igechtech.com</b></p>
+      </details>
+    </div>
+  </section>
+  
+  <section class="ajuda-contato">
+    <h2 class="ajuda-subtitle">Envie sua dúvida</h2>
+    <form method="post" class="form-ajuda">
+      <textarea name="duvida" rows="4" class="input-duvida" required placeholder="Descreva sua dúvida, sugestão ou solicitação"></textarea>
+      <button type="submit" class="btn-ajuda-enviar">
+        <span class="btn-icon">&#x27A4;</span> Enviar
+      </button>
+    </form>
+    <p class="ajuda-desc">Nosso time responde em até 24h úteis. Quanto mais detalhes, melhor a resposta!</p>
+    <div class="contato-info">
+      <span><strong>E-mail:</strong> suporte@igechtech.com</span>
+      <span><strong>Whatsapp:</strong> (11) 93000-1234</span>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block page_js %}
+<!-- Nenhum JS obrigatório -->
+{% endblock %}

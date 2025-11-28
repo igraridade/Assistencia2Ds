@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}IGECH TECH — Inovação em Gestão Digital{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css', v=3) }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="hero-content">
+    <h2 class="bigtech-title">
+      Maximize sua gestão digital<br>
+      <span>Moderna. Segura. Integrada.</span>
+    </h2>
+    <p class="bigtech-desc">
+      Unifique chamados, equipes e empresas.<br>
+      Descubra o futuro da gestão na nuvem e ganhe tempo para o que importa.
+    </p>
+    <div class="hero-actions">
+      <a class="bigtech-cta" href="{{ url_for('servicos') }}">Conhecer serviços</a>
+    </div>
+
+    <!-- Estatísticas do Hero -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">200+</span>
+        <span class="stat-label">Tecnicos Disponiveis</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Satisfação</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">24/7</span>
+        <span class="stat-label">Suporte Online</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="features" id="features">
+  <h2>Nossas Soluções</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🤝</div>
+      <h3>Equipes Integradas</h3>
+      <p>Conecte profissionais e otimize comunicações internas com eficiência digital.</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <h3>Alocação Inteligente</h3>
+      <p>Garanta o uso estratégico de recursos e impulsione seu crescimento.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>Relatórios Avançados</h3>
+      <p>Visualize métricas em tempo real e tome decisões baseadas em dados concretos.</p>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="about-text">
+    <h2>Por que escolher a IGECH TECH?</h2>
+    <p>Nossa plataforma une segurança e inovação, oferecendo performance, automação e suporte personalizado para empresas que querem ir além.</p>
+    <ul>
+      <li>🔒 Segurança Avançada</li>
+      <li>⚙️ Suporte Dedicado</li>
+      <li>🚀 Soluções Sob Medida</li>
+    </ul>
+  </div>
+  <div class="about-img">
+    <img src="{{ url_for('static', filename='images/time-home.jfif', v=1) }}" alt="Time de tecnologia">
+  </div>
+</section>
+
+<!-- CTA Section (MAIS CONTUNDENTE - SEM BOTÕES) -->
+<section class="cta-section">
+  <div class="cta-container">
+    <h2>Pronto para transformar sua gestão?</h2>
+    <p>Junte-se a centenas de empresas que já otimizaram seus processos com a IGECH TECH.</p>
+    
+    <div class="cta-features">
+      <div class="cta-feature">
+        <span class="check-icon">✓</span>
+        <span>Implementação rápida em 48h</span>
+      </div>
+      <div class="cta-feature">
+        <span class="check-icon">✓</span>
+        <span>Treinamento completo incluído</span>
+      </div>
+      <div class="cta-feature">
+        <span class="check-icon">✓</span>
+        <span>Suporte técnico prioritário</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

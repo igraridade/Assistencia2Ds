@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}IGECH TECH — Serviços{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/servicos.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-servicos">
+  <div class="page-header">
+    <div>
+      <h1 class="hero-title">Serviços</h1>
+      <p class="hero-desc">Controle, acompanhe e abra chamados de manutenção e suporte</p>
+    </div>
+    <button class="btn-add-servico" id="btnAddServico">
+      <span class="btn-icon">+</span>
+      Novo Serviço
+    </button>
+  </div>
+
+  <!-- Cards de resumo -->
+  <section class="servicos-summary">
+    <div class="summary-card">
+      <span class="summary-icon summary-blue"></span>
+      <div>
+        <div class="summary-value" id="total-servicos">0</div>
+        <div class="summary-label">Total de Serviços</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <span class="summary-icon summary-cyan"></span>
+      <div>
+        <div class="summary-value" id="servicos-abertos">0</div>
+        <div class="summary-label">Em Aberto</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <span class="summary-icon summary-violet"></span>
+      <div>
+        <div class="summary-value" id="servicos-concluidos">0</div>
+        <div class="summary-label">Concluídos</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <span class="summary-icon summary-indigo"></span>
+      <div>
+        <div class="summary-value" id="servicos-urgentes">0</div>
+        <div class="summary-label">Urgentes</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros avançados -->
+  <section class="filter-section">
+    <div class="search-box">
+      <span class="search-icon"></span>
+      <input type="text" id="searchServico" placeholder="Protocolo, empresa, cliente, problema..." class="search-input">
+    </div>
+    <div class="filter-controls">
+      <select class="filter-select" id="filterStatus">
+        <option value="">Todos os Status</option>
+        <option value="aberta">Aberta</option>
+        <option value="em andamento">Em Andamento</option>
+        <option value="concluida">Concluída</option>
+        <option value="pendente">Pendente</option>
+        <option value="cancelada">Cancelada</option>
+      </select>
+      <select class="filter-select" id="filterPrioridade">
+        <option value="">Todas as Prioridades</option>
+        <option value="baixa">Baixa</option>
+        <option value="media">Média</option>
+        <option value="alta">Alta</option>
+        <option value="urgente">Urgente</option>
+      </select>
+      <select class="filter-select" id="filterCategoria">
+        <option value="">Todas as Categorias</option>
+        <option value="Hardware">Hardware</option>
+        <option value="Software">Software</option>
+        <option value="Redes">Redes</option>
+        <option value="Suporte">Suporte</option>
+      </select>
+    </div>
+    <button class="btn-exportar" id="btnExportarServicos">
+      <span class="btn-icon">&#x1F4E5;</span>
+      Exportar Dados
+    </button>
+  </section>
+
+  <!-- Tabela de serviços -->
+  <section class="servicos-table-section">
+    <div class="table-header">
+      <h2 class="section-title">Lista de Serviços</h2>
+      <span class="table-count" id="tableCount">0 serviços encontrados</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="servicos-table">
+        <thead>
+          <tr>
+            <th>Protocolo</th>
+            <th>Categoria</th>
+            <th>Empresa</th>
+            <th>Cliente</th>
+            <th>Problema</th>
+            <th>Prioridade</th>
+            <th>Status</th>
+            <th>Prazo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="servicosTableBody">
+          <!-- Renderizado via JS -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Vitrine de categorias -->
+  <section class="vitrine-section">
+    <h2 class="section-title">Serviços por Categoria</h2>
+    <div class="vitrine-cards" id="vitrineCards">
+      <!-- Renderizado via JS -->
+    </div>
+  </section>
+
+  <!-- Cards extras: estatísticas rápidas -->
+  <section class="info-cards">
+    <div class="info-card">
+      <span class="info-icon info-blue"></span>
+      <div>
+        <div class="info-title">Abertos Recentemente</div>
+        <div class="info-desc"><span id="novos7dias">0</span> novos serviços nos últimos 7 dias</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <span class="info-icon info-cyan"></span>
+      <div>
+        <div class="info-title">Média de Atendimento</div>
+        <div class="info-desc"><span id="mediaPrazo">-</span> dias para conclusão (em média)</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <span class="info-icon info-violet"></span>
+      <div>
+        <div class="info-title">Problemas Frequentes</div>
+        <div class="info-desc" id="topProblemas">-</div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block page_js %}
+  <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/servicos.js') }}"></script>
+{% endblock %}

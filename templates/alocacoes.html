@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}IGECH TECH — Alocações{% endblock %}
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/alocacoes.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-alocacoes">
+
+  <div class="page-header">
+    <div>
+      <h1 class="hero-title">Alocações de Técnicos</h1>
+      <p class="hero-desc">Gerencie a distribuição de técnicos nos serviços de forma eficiente.</p>
+    </div>
+    <button class="btn-add-alocacao" id="btnAddAlocacao" type="button">
+      <span class="btn-icon">+</span>Nova Alocação
+    </button>
+  </div>
+
+  <!-- Resumo (cards dinâmicos) -->
+  <section class="alocacoes-summary">
+    <div class="summary-card">
+      <span class="summary-icon summary-blue"></span>
+      <div>
+        <div class="summary-value" id="total-alocacoes">0</div>
+        <div class="summary-label">Total de Alocações</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <span class="summary-icon summary-cyan"></span>
+      <div>
+        <div class="summary-value" id="alocacoes-hoje">0</div>
+        <div class="summary-label">Criadas Hoje</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <span class="summary-icon summary-violet"></span>
+      <div>
+        <div class="summary-value" id="tecnicos-alocados">0</div>
+        <div class="summary-label">Técnicos Alocados</div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <span class="summary-icon summary-indigo"></span>
+      <div>
+        <div class="summary-value" id="servicos-ativos">0</div>
+        <div class="summary-label">Serviços Ativos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros/busca -->
+  <section class="filter-section">
+    <div class="search-box">
+      <span class="search-icon"></span>
+      <input type="text" id="searchAlocacao" placeholder="Buscar por técnico, serviço ou protocolo..." class="search-input">
+    </div>
+    <div class="filter-controls">
+      <select class="filter-select" id="filterStatus">
+        <option value="">Todos os Status</option>
+        <option value="aberta">Aberta</option>
+        <option value="em andamento">Em Andamento</option>
+        <option value="concluida">Concluída</option>
+        <option value="pendente">Pendente</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Tabela -->
+  <section class="alocacoes-table-section">
+    <div class="table-header">
+      <h2 class="section-title">Lista de Alocações</h2>
+      <span class="table-count" id="tableCount">0 alocações encontradas</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="alocacoes-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Protocolo</th>
+            <th>Serviço</th>
+            <th>Técnico</th>
+            <th>Empresa</th>
+            <th>Status</th>
+            <th>Data Início</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="alocacoesTableBody">
+          <tr>
+            <td colspan="8" style="text-align:center; padding:40px; color:#999;">
+              Carregando alocações...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal cadastro/edição -->
+  <div id="modalAlocacao" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close" type="button" id="closeModalAlocacao">&times;</button>
+      <h2 id="modalAlocacaoTitle">Nova Alocação</h2>
+      <form id="formAlocacao">
+        <input type="hidden" name="id_alocacao" id="idAlocacao">
+        
+        <label>Serviço / Protocolo <span style="color:red;">*</span>
+          <select name="servico_id" id="servicoAlocacao" required>
+            <option value="">Selecione um serviço...</option>
+          </select>
+        </label>
+        
+        <label>Técnico <span style="color:red;">*</span>
+          <select name="id_tecnico" id="tecnicoAlocacao" required>
+            <option value="">Selecione um técnico...</option>
+          </select>
+        </label>
+        
+        <label>Status do Serviço
+          <input type="text" id="statusExibicao" readonly style="background: #f5f6fa; color: #5a6478; cursor: not-allowed;">
+        </label>
+        
+        <label>Empresa Vinculada
+          <input type="text" id="empresaExibicao" readonly style="background: #f5f6fa; color: #5a6478; cursor: not-allowed;">
+        </label>
+        
+        <label>Data da Alocação
+          <input type="date" name="data_alocacao" id="dataAlocacao">
+        </label>
+        
+        <div id="alocacaoError" style="color: red; margin-top: 10px; display: none;"></div>
+        
+        <button type="submit" id="btnSalvarAlocacao">Salvar Alocação</button>
+      </form>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block page_js %}
+  <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/alocacoes.js') }}"></script>
+{% endblock %}
