@@ -297,26 +297,84 @@ def api_dashboard():
 def api_dashboard_exportar():
     if not is_admin():
         return jsonify({"error": "forbidden"}), 403
+
     try:
         periodo = request.args.get('periodo', 'hoje')
+
+        hoje = date.today()
+        if periodo == 'semana':
+            dias = 7
+        elif periodo == 'mes':
+            dias = 30
+        elif periodo == 'ano':
+            dias = 365
+        else:
+            dias = 2
+        inicio = hoje - timedelta(days=dias - 1)
+
         tecnicos_now = _count("SELECT COUNT(*) c FROM tecnico")
         empresas_now = _count("SELECT COUNT(*) c FROM empresa_cliente")
         usuarios_now = _count("SELECT COUNT(*) c FROM usuario")
-        aloc_hoje_now = _count("SELECT COUNT(*) c FROM alocacao_tecnico")
+        aloc_hoje = _count_alocacoes_no_dia_safe(hoje)
+
+        col_tecnico = DATA_COLS['tecnico']
+        col_empresa = DATA_COLS['empresa_cliente']
+        col_usuario = DATA_COLS['usuario']
+
+        tecnicos_before = _count_by_date_until('tecnico', col_tecnico, inicio)
+        empresas_before = _count_by_date_until('empresa_cliente', col_empresa, inicio)
+        usuarios_before = _count_by_date_until('usuario', col_usuario, inicio)
+        aloc_before = _count_alocacoes_no_dia_safe(inicio)
+
+        growth_tec = growth_str(tecnicos_now, tecnicos_before)
+        growth_emp = growth_str(empresas_now, empresas_before)
+        growth_usr = growth_str(usuarios_now, usuarios_before)
+        growth_aloc = growth_str(aloc_hoje, aloc_before)
+
+        import codecs
         output = StringIO()
-        writer = csv.writer(output)
-        writer.writerow(['Métrica', 'Quantidade'])
-        writer.writerow(['Técnicos Ativos', tecnicos_now])
-        writer.writerow(['Empresas Cadastradas', empresas_now])
-        writer.writerow(['Usuários Totais', usuarios_now])
-        writer.writerow(['Alocações Hoje', aloc_hoje_now])
-        response = make_response(output.getvalue())
-        response.headers["Content-Disposition"] = f"attachment; filename=dashboard_{periodo}.csv"
+        writer = csv.writer(
+            output,
+            delimiter=',',              # MUDOU: vírgula pro Excel Online reconhecer
+            lineterminator='\n',
+            quoting=csv.QUOTE_MINIMAL   # escapa automaticamente se tiver vírgula nos dados
+        )
+
+        now = date.today().strftime('%d/%m/%Y %H:%M')
+        writer.writerow([f'Dashboard IGECH TECH - {periodo.capitalize()}'])
+        writer.writerow([f'Exportado em: {now}'])
+        writer.writerow([])
+
+        writer.writerow(['Métrica', 'Quantidade', 'Crescimento'])
+        writer.writerow(['Técnicos Ativos', tecnicos_now, growth_tec])
+        writer.writerow(['Empresas Cadastradas', empresas_now, growth_emp])
+        writer.writerow(['Usuários Totais', usuarios_now, growth_usr])
+        writer.writerow(['Alocações', aloc_hoje, growth_aloc])
+
+        writer.writerow([])
+        writer.writerow(['INSIGHTS'])
+        insights = {
+            "growthTexto": resumo_crescimento("usuários", growth_usr, periodo),
+            "alertaTexto": f"Período analisado: {periodo}",
+            "sistemaTexto": f"Última atualização: {now}"
+        }
+        writer.writerow(['Growth', insights['growthTexto']])
+        writer.writerow(['Alerta', insights['alertaTexto']])
+
+        csv_content = output.getvalue()
+        bom = codecs.BOM_UTF8
+
+        response = make_response(bom + csv_content.encode('utf-8'))
+        response.headers["Content-Disposition"] = f"attachment; filename=dashboard_{periodo}_{now[:10]}.csv"
         response.headers["Content-type"] = "text/csv; charset=utf-8"
+
         return response
+
     except Exception as e:
         logger.exception("Erro na exportação do dashboard")
         return jsonify({"error": str(e)}), 500
+
+
 
 @bp.route('/contratar-servico')
 def contratar_servico():

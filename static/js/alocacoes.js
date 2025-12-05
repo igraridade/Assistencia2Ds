@@ -2,7 +2,6 @@ const API_BASE = '/api/alocacoes';
 let alocacoesCache = [];
 let servicosCache = [];
 
-// ========== UTILITÁRIOS ==========
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -18,17 +17,36 @@ function mostrarErro(mensagem) {
   setTimeout(() => { errDiv.style.display = 'none'; }, 5000);
 }
 
-// ========== CARREGAR SELECTS ==========
+function formatarDataPtBR(valor) {
+  if (!valor) return '-';
+  const s = String(valor);
+  const partes = s.split(' ');
+  if (partes.length < 4) return '-';
+
+  const dia = partes[1];
+  const mesStr = partes[2];
+  const ano = partes[3];
+
+  const mapaMes = {
+    Jan: '01', Feb: '02', Mar: '03', Apr: '04',
+    May: '05', Jun: '06', Jul: '07', Aug: '08',
+    Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+  };
+
+  const mes = mapaMes[mesStr] || '01';
+  return `${dia}/${mes}/${ano}`;
+}
+
 async function carregarServicos() {
   const select = document.getElementById('servicoAlocacao');
   select.innerHTML = '<option value="">Carregando serviços...</option>';
-  
+
   try {
     const resp = await fetch('/api/servicos');
     const data = await resp.json();
-    
+
     select.innerHTML = '<option value="">Selecione um serviço...</option>';
-    
+
     if (data.servicos && data.servicos.length > 0) {
       servicosCache = data.servicos;
       data.servicos.forEach(s => {
@@ -51,13 +69,13 @@ async function carregarServicos() {
 async function carregarTecnicos() {
   const select = document.getElementById('tecnicoAlocacao');
   select.innerHTML = '<option value="">Carregando técnicos...</option>';
-  
+
   try {
     const resp = await fetch('/api/tecnicos');
     const data = await resp.json();
-    
+
     select.innerHTML = '<option value="">Selecione um técnico...</option>';
-    
+
     if (data.tecnicos && data.tecnicos.length > 0) {
       data.tecnicos.forEach(t => {
         const opt = document.createElement('option');
@@ -79,11 +97,11 @@ async function carregarEmpresaDoServico(idEmpresa) {
     document.getElementById('empresaExibicao').value = 'Não vinculado';
     return;
   }
-  
+
   try {
     const resp = await fetch('/api/empresas');
     const data = await resp.json();
-    
+
     if (data.empresas && data.empresas.length > 0) {
       const empresa = data.empresas.find(e => e.id_empresa_cliente == idEmpresa);
       document.getElementById('empresaExibicao').value = empresa ? empresa.nome : 'Não encontrada';
@@ -94,88 +112,97 @@ async function carregarEmpresaDoServico(idEmpresa) {
   }
 }
 
-// Atualizar status e empresa ao selecionar serviço
-document.getElementById('servicoAlocacao').addEventListener('change', function() {
+document.getElementById('servicoAlocacao')?.addEventListener('change', function() {
   const selectedOption = this.options[this.selectedIndex];
   const status = selectedOption.dataset.status || 'aberta';
   const idEmpresa = selectedOption.dataset.empresa || '';
-  
+
   document.getElementById('statusExibicao').value = status.charAt(0).toUpperCase() + status.slice(1);
   carregarEmpresaDoServico(idEmpresa);
 });
 
-// ========== MODAL ==========
 async function openAlocacaoModal(editData = null) {
   await carregarServicos();
   await carregarTecnicos();
-  
+
   document.getElementById('formAlocacao').reset();
   document.getElementById('idAlocacao').value = editData?.id_alocacao ?? "";
   document.getElementById('modalAlocacaoTitle').textContent = editData ? "Editar Alocação" : "Nova Alocação";
   document.getElementById('statusExibicao').value = '';
   document.getElementById('empresaExibicao').value = '';
-  
+
   if (editData) {
     document.getElementById('servicoAlocacao').value = editData.protocolo ?? "";
     document.getElementById('tecnicoAlocacao').value = editData.id_tecnico ?? "";
-    document.getElementById('dataAlocacao').value = editData.data_alocacao ? editData.data_alocacao.split('T')[0] : "";
-    document.getElementById('statusExibicao').value = editData.status ? editData.status.charAt(0).toUpperCase() + editData.status.slice(1) : '';
+
+    const d = new Date(editData.data_alocacao);
+    if (!isNaN(d.getTime())) {
+      const ano = d.getFullYear();
+      const mes = String(d.getMonth() + 1).padStart(2, '0');
+      const dia = String(d.getDate()).padStart(2, '0');
+      document.getElementById('dataAlocacao').value = `${ano}-${mes}-${dia}`;
+    } else {
+      document.getElementById('dataAlocacao').value = '';
+    }
+
+    document.getElementById('statusExibicao').value = editData.status
+      ? editData.status.charAt(0).toUpperCase() + editData.status.slice(1)
+      : '';
     document.getElementById('empresaExibicao').value = editData.empresa_nome || 'Não vinculado';
   }
-  
+
   openModal('modalAlocacao');
 }
 
 function closeAlocacaoModal() {
-  closeModal(document.getElementById('modalAlocacao'));
+  closeModal('modalAlocacao');
 }
 
-// ========== EVENTOS ==========
-document.getElementById('btnAddAlocacao').addEventListener('click', () => openAlocacaoModal());
-document.getElementById('closeModalAlocacao').addEventListener('click', closeAlocacaoModal);
+document.getElementById('btnAddAlocacao')?.addEventListener('click', () => openAlocacaoModal());
+document.getElementById('closeModalAlocacao')?.addEventListener('click', closeAlocacaoModal);
 
-document.getElementById('modalAlocacao').addEventListener('click', (e) => {
+document.getElementById('modalAlocacao')?.addEventListener('click', (e) => {
   if (e.target.id === 'modalAlocacao') closeAlocacaoModal();
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('modalAlocacao').getAttribute('aria-hidden') === 'false') {
+  if (e.key === 'Escape' && document.getElementById('modalAlocacao')?.getAttribute('aria-hidden') === 'false') {
     closeAlocacaoModal();
   }
 });
 
-document.getElementById('formAlocacao').addEventListener('submit', async function(e){
+document.getElementById('formAlocacao')?.addEventListener('submit', async function(e){
   e.preventDefault();
-  
+
   const btnSalvar = document.getElementById('btnSalvarAlocacao');
   const textoOriginal = btnSalvar.textContent;
   btnSalvar.disabled = true;
   btnSalvar.textContent = 'Salvando...';
-  
+
   const id = document.getElementById('idAlocacao').value;
   const payload = {
     servico_protocolo: document.getElementById('servicoAlocacao').value,
     id_tecnico: document.getElementById('tecnicoAlocacao').value,
     data_alocacao: document.getElementById('dataAlocacao').value || null
   };
-  
+
   if (!payload.servico_protocolo) {
     mostrarErro('Selecione um serviço');
     btnSalvar.disabled = false;
     btnSalvar.textContent = textoOriginal;
     return;
   }
-  
+
   if (!payload.id_tecnico) {
     mostrarErro('Selecione um técnico');
     btnSalvar.disabled = false;
     btnSalvar.textContent = textoOriginal;
     return;
   }
-  
+
   try {
     let resp;
-    if(id){
+    if (id) {
       resp = await fetch(`${API_BASE}/${id}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -188,13 +215,13 @@ document.getElementById('formAlocacao').addEventListener('submit', async functio
         body: JSON.stringify(payload)
       });
     }
-    
+
     const result = await resp.json();
-    
-    if(!resp.ok) {
+
+    if (!resp.ok) {
       throw new Error(result.error || "Erro ao salvar alocação");
     }
-    
+
     closeAlocacaoModal();
     await loadAlocacoes();
   } catch (err) {
@@ -206,42 +233,39 @@ document.getElementById('formAlocacao').addEventListener('submit', async functio
   }
 });
 
-// ========== DELETE ==========
 async function deletarAlocacao(id) {
   try {
     const resp = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
     const result = await resp.json();
-    
+
     if (!resp.ok) {
       throw new Error(result.error || 'Erro ao deletar');
     }
-    
+
     await loadAlocacoes();
   } catch (err) {
     alert('Erro ao deletar alocação: ' + err.message);
   }
 }
 
-// ========== MUDAR STATUS ==========
 async function mudarStatus(id, novoStatus) {
   try {
-    const resp = await fetch(`${API_BASE}/${id}/${novoStatus}`, { 
+    const resp = await fetch(`${API_BASE}/${id}/${novoStatus}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'}
     });
     const result = await resp.json();
-    
+
     if (!resp.ok) {
       throw new Error(result.error || 'Erro ao alterar status');
     }
-    
+
     await loadAlocacoes();
   } catch (err) {
     alert('Erro ao alterar status: ' + err.message);
   }
 }
 
-// ========== RESUMO ==========
 function atualizarCardsResumo(dados) {
   document.getElementById('total-alocacoes').textContent = dados.total;
   document.getElementById('alocacoes-hoje').textContent = dados.hoje;
@@ -249,13 +273,12 @@ function atualizarCardsResumo(dados) {
   document.getElementById('servicos-ativos').textContent = dados.servicosAtivos;
 }
 
-// ========== FILTROS ==========
 function filtrarAlocacoes() {
   const searchTerm = document.getElementById('searchAlocacao').value.toLowerCase();
   const statusFilter = document.getElementById('filterStatus').value;
-  
+
   let filtradas = alocacoesCache;
-  
+
   if (searchTerm) {
     filtradas = filtradas.filter(a =>
       (a.tecnico_nome || '').toLowerCase().includes(searchTerm) ||
@@ -263,17 +286,15 @@ function filtrarAlocacoes() {
       (a.protocolo || '').toString().includes(searchTerm)
     );
   }
-  
+
   if (statusFilter) {
     filtradas = filtradas.filter(a => a.status === statusFilter);
   }
-  
+
   renderTabela(filtradas);
 }
 
-// ========== DROPDOWN ==========
 function inicializarDropdowns() {
-  // Fechar todos os dropdowns ao clicar fora
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.dropdown')) {
       document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -281,38 +302,32 @@ function inicializarDropdowns() {
       });
     }
   });
-  
-  // Toggle dropdown ao clicar no botão
+
   document.querySelectorAll('.btn-dropdown').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       const menu = this.nextElementSibling;
       const isOpen = menu.classList.contains('show');
-      
-      // Fechar todos os outros
+
       document.querySelectorAll('.dropdown-menu').forEach(m => {
         m.classList.remove('show');
       });
-      
-      // Toggle este
+
       if (!isOpen) {
         menu.classList.add('show');
       }
     });
   });
-  
-  // Ações do menu
+
   document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', function(e) {
       e.stopPropagation();
       const action = this.dataset.action;
       const row = this.closest('tr');
       const id = row.getAttribute('data-id');
-      
-      // Fechar menu
+
       this.closest('.dropdown-menu').classList.remove('show');
-      
-      // Executar ação
+
       if (action === 'delete') {
         if (confirm(`Deseja realmente excluir a alocação #${id}?`)) {
           deletarAlocacao(id);
@@ -334,8 +349,7 @@ function inicializarDropdowns() {
       }
     });
   });
-  
-  // Evento de edição
+
   document.querySelectorAll('.btn-edit').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -346,10 +360,9 @@ function inicializarDropdowns() {
   });
 }
 
-// ========== RENDERIZAÇÃO ==========
 function renderTabela(lista) {
   const tbody = document.getElementById('alocacoesTableBody');
-  
+
   if (!lista || lista.length === 0) {
     tbody.innerHTML = `
       <tr>
@@ -361,13 +374,11 @@ function renderTabela(lista) {
     document.getElementById('tableCount').textContent = '0 alocações encontradas';
     return;
   }
-  
+
   tbody.innerHTML = lista.map(al => {
     const status = al.status || 'aberta';
-    
-    // Menu de ações baseado no status
     let opcoesMenu = '';
-    
+
     if (status === 'aberta') {
       opcoesMenu = `
         <div class="dropdown-item" data-action="em-andamento">▶️ Iniciar</div>
@@ -388,7 +399,7 @@ function renderTabela(lista) {
         <div class="dropdown-item" data-action="reabrir">🔄 Reabrir</div>
       `;
     }
-    
+
     return `
       <tr data-id="${al.id_alocacao}">
         <td><strong>#${al.id_alocacao}</strong></td>
@@ -397,7 +408,7 @@ function renderTabela(lista) {
         <td>${al.tecnico_nome ?? "-"}</td>
         <td>${al.empresa_nome ?? "-"}</td>
         <td><span class="badge badge-${status.replace(' ', '-')}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
-        <td>${al.data_alocacao ? new Date(al.data_alocacao).toLocaleDateString("pt-BR") : "-"}</td>
+        <td>${formatarDataPtBR(al.data_alocacao)}</td>
         <td class="td-actions">
           <button class="btn-action btn-edit" type="button" title="Editar">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -417,30 +428,51 @@ function renderTabela(lista) {
       </tr>
     `;
   }).join('');
-  
+
   document.getElementById('tableCount').textContent = `${lista.length} alocações encontradas`;
-  
-  // Adicionar evento de clique para dropdowns
+
   inicializarDropdowns();
 }
 
-// ========== LISTAGEM ==========
-async function loadAlocacoes(){
+async function loadAlocacoes() {
   try {
     const resp = await fetch(API_BASE);
     const result = await resp.json();
     alocacoesCache = result?.alocacoes ?? [];
-    
+
     renderTabela(alocacoesCache);
-    
-    // Calcular resumo
+
     const total = alocacoesCache.length;
-    const hoje = alocacoesCache.filter(a =>
-      new Date(a.data_alocacao).toDateString() === new Date().toDateString()
-    ).length;
+
+    const hoje = (() => {
+      const agora = new Date();
+      const diaHoje = String(agora.getDate()).padStart(2, '0');
+      const mesHoje = String(agora.getMonth() + 1).padStart(2, '0');
+      const anoHoje = String(agora.getFullYear());
+
+      return alocacoesCache.filter(a => {
+        if (!a.data_alocacao) return false;
+        const s = String(a.data_alocacao);
+        const partes = s.split(' ');
+        if (partes.length < 4) return false;
+        const dia = partes[1];
+        const mesStr = partes[2];
+        const ano = partes[3];
+
+        const mapaMes = {
+          Jan: '01', Feb: '02', Mar: '03', Apr: '04',
+          May: '05', Jun: '06', Jul: '07', Aug: '08',
+          Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+        };
+
+        const mes = mapaMes[mesStr] || '01';
+        return dia === diaHoje && mes === mesHoje && ano === anoHoje;
+      }).length;
+    })();
+
     const tecnicosUnicos = [...new Set(alocacoesCache.map(a => a.tecnico_nome))].filter(Boolean).length;
     const servicosAtivos = [...new Set(alocacoesCache.map(a => a.protocolo))].filter(Boolean).length;
-    
+
     atualizarCardsResumo({
       total,
       hoje,
@@ -456,13 +488,12 @@ async function loadAlocacoes(){
         </td>
       </tr>
     `;
-    atualizarCardsResumo({total:0, hoje:0, tecnicos:0, servicosAtivos:0});
+    atualizarCardsResumo({ total: 0, hoje: 0, tecnicos: 0, servicosAtivos: 0 });
   }
 }
 
-// ========== EVENTOS DE FILTRO ==========
-document.getElementById('searchAlocacao').addEventListener('input', debounce(filtrarAlocacoes, 300));
-document.getElementById('filterStatus').addEventListener('change', filtrarAlocacoes);
+document.getElementById('searchAlocacao')?.addEventListener('input', debounce(filtrarAlocacoes, 300));
+document.getElementById('filterStatus')?.addEventListener('change', filtrarAlocacoes);
 
-// ========== INICIALIZAÇÃO ==========
 document.addEventListener('DOMContentLoaded', loadAlocacoes);
+

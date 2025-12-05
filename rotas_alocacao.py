@@ -1,13 +1,14 @@
 from flask import Blueprint, request, jsonify, session
 from mysql.connector import errors as mysql_errors
 import logging
+from datetime import datetime
+import zoneinfo  # Python 3.9+
 
 from automacao_alocacao import atualizar_empresa_tecnico_hook
-from app import (
-    fetch_one, fetch_all, exec_write, cache, logger
-)
+from app import fetch_one, fetch_all, exec_write, cache, logger
 
 bp = Blueprint('alocacao', __name__)
+TZ_BR = zoneinfo.ZoneInfo("America/Sao_Paulo")
 
 
 @bp.route('/api/alocacoes', methods=['GET'])
@@ -64,20 +65,23 @@ def api_alocacoes_criar():
             """
             exec_write(sql, (id_tecnico, servico_protocolo, data_aloc))
         else:
+            hoje_br = datetime.now(TZ_BR).date().isoformat()  # ex: '2025-12-02'
             sql = """
                 INSERT INTO alocacao_tecnico (id_tecnico_fk, protocolo_fk, data_inicio_alocacao)
-                VALUES (%s, %s, NOW())
+                VALUES (%s, %s, %s)
             """
-            exec_write(sql, (id_tecnico, servico_protocolo))
+            exec_write(sql, (id_tecnico, servico_protocolo, hoje_br))
 
-        # Busca a alocação recém-criada para obter o ID
-        nova = fetch_one("""
+        nova = fetch_one(
+            """
             SELECT id_alocacao_tecnico
             FROM alocacao_tecnico
             WHERE id_tecnico_fk = %s AND protocolo_fk = %s
             ORDER BY data_inicio_alocacao DESC
             LIMIT 1
-        """, (id_tecnico, servico_protocolo))
+            """,
+            (id_tecnico, servico_protocolo),
+        )
 
         if nova:
             atualizar_empresa_tecnico_hook(
@@ -87,6 +91,7 @@ def api_alocacoes_criar():
 
         cache.clear()
         return jsonify({'success': True, 'message': 'Alocação criada com sucesso'}), 201
+
     except Exception as e:
         logger.exception("Erro ao criar alocação")
         return jsonify({'error': str(e)}), 500
@@ -116,7 +121,6 @@ def api_alocacoes_editar(id):
     fields.append('protocolo_fk = %s')
     vals.append(servico_protocolo)
 
-    # Sempre atualizar a data se fornecida
     if data_aloc:
         fields.append('data_inicio_alocacao = %s')
         vals.append(data_aloc)
@@ -172,7 +176,6 @@ def api_alocacao_concluir(id):
             (id,)
         )
 
-        # Atualiza empresa atual do técnico depois de concluir
         atualizar_empresa_tecnico_hook(
             int(alocacao['id_tecnico_fk']),
             int(id)
@@ -261,7 +264,6 @@ def api_alocacao_reabrir(id):
             (id,)
         )
 
-        # Ao reabrir, garante que o técnico fique associado de novo a essa empresa
         atualizar_empresa_tecnico_hook(
             int(alocacao['id_tecnico_fk']),
             int(id)

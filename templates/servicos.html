@@ -20,33 +20,61 @@
   </div>
 
   <!-- Cards de resumo -->
-  <section class="servicos-summary">
-    <div class="summary-card">
-      <span class="summary-icon summary-blue"></span>
+ <section class="servicos-summary">
+  <div class="summary-card">
+    <span class="summary-icon summary-blue"></span>
+    <div class="summary-info">  <!-- ✅ ADICIONE -->
+      <div class="summary-value" id="total-servicos">0</div>
+      <div class="summary-label">Total de Serviços</div>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <span class="summary-icon summary-cyan"></span>
+    <div class="summary-info">  <!-- ✅ ADICIONE -->
+      <div class="summary-value" id="servicos-abertos">0</div>
+      <div class="summary-label">Em Aberto</div>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <span class="summary-icon summary-violet"></span>
+    <div class="summary-info">  <!-- ✅ ADICIONE -->
+      <div class="summary-value" id="servicos-concluidos">0</div>
+      <div class="summary-label">Concluídos</div>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <span class="summary-icon summary-indigo"></span>
+    <div class="summary-info">  <!-- ✅ ADICIONE -->
+      <div class="summary-value" id="servicos-urgentes">0</div>
+      <div class="summary-label">Urgentes</div>
+    </div>
+  </div>
+</section>
+
+<!-- Cards extras: estatísticas rápidas -->
+  <section class="info-cards">
+    <div class="info-card">
+      <span class="info-icon info-blue"></span>
       <div>
-        <div class="summary-value" id="total-servicos">0</div>
-        <div class="summary-label">Total de Serviços</div>
+        <div class="info-title">Abertos Recentemente</div>
+        <div class="info-desc"><span id="novos7dias">0</span> novos serviços nos últimos 7 dias</div>
       </div>
     </div>
-    <div class="summary-card">
-      <span class="summary-icon summary-cyan"></span>
+    <div class="info-card">
+      <span class="info-icon info-cyan"></span>
       <div>
-        <div class="summary-value" id="servicos-abertos">0</div>
-        <div class="summary-label">Em Aberto</div>
+        <div class="info-title">Média de Atendimento</div>
+        <div class="info-desc"><span id="mediaPrazo">-</span> dias para conclusão (em média)</div>
       </div>
     </div>
-    <div class="summary-card">
-      <span class="summary-icon summary-violet"></span>
+    <div class="info-card">
+      <span class="info-icon info-violet"></span>
       <div>
-        <div class="summary-value" id="servicos-concluidos">0</div>
-        <div class="summary-label">Concluídos</div>
-      </div>
-    </div>
-    <div class="summary-card">
-      <span class="summary-icon summary-indigo"></span>
-      <div>
-        <div class="summary-value" id="servicos-urgentes">0</div>
-        <div class="summary-label">Urgentes</div>
+        <div class="info-title">Problemas Frequentes</div>
+        <div class="info-desc" id="topProblemas">-</div>
       </div>
     </div>
   </section>
@@ -115,42 +143,12 @@
     </div>
   </section>
 
-  <!-- Vitrine de categorias -->
-  <section class="vitrine-section">
-    <h2 class="section-title">Serviços por Categoria</h2>
-    <div class="vitrine-cards" id="vitrineCards">
-      <!-- Renderizado via JS -->
-    </div>
-  </section>
 
-  <!-- Cards extras: estatísticas rápidas -->
-  <section class="info-cards">
-    <div class="info-card">
-      <span class="info-icon info-blue"></span>
-      <div>
-        <div class="info-title">Abertos Recentemente</div>
-        <div class="info-desc"><span id="novos7dias">0</span> novos serviços nos últimos 7 dias</div>
-      </div>
-    </div>
-    <div class="info-card">
-      <span class="info-icon info-cyan"></span>
-      <div>
-        <div class="info-title">Média de Atendimento</div>
-        <div class="info-desc"><span id="mediaPrazo">-</span> dias para conclusão (em média)</div>
-      </div>
-    </div>
-    <div class="info-card">
-      <span class="info-icon info-violet"></span>
-      <div>
-        <div class="info-title">Problemas Frequentes</div>
-        <div class="info-desc" id="topProblemas">-</div>
-      </div>
-    </div>
-  </section>
+
+
 </main>
 {% endblock %}
 
 {% block page_js %}
-  <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
   <script src="{{ url_for('static', filename='js/servicos.js') }}"></script>
 {% endblock %}

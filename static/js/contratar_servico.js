@@ -67,6 +67,11 @@ function formatarCEP(input) {
 
 async function abrirModalTecnicos(categoria) {
     categoriaSelecionada = categoria;
+    
+    // Adiciona a classe modal-open para esconder navbar e footer
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+    
     const modal = document.getElementById('modalTecnicos');
     const titulo = document.getElementById('modalTitulo');
     const lista = document.getElementById('tecnicosLista');
@@ -185,7 +190,6 @@ function gerarEstrelas(avaliacao) {
 
 
 function selecionarTecnico(tecnico) {
-    // ✅ GARANTIR que preco_hora seja número antes de passar
     let precoHora = parseFloat(tecnico.preco_hora);
     if (isNaN(precoHora) || precoHora <= 0) {
         precoHora = 100.00;
@@ -194,7 +198,7 @@ function selecionarTecnico(tecnico) {
 
     tecnicoSelecionado = {
         ...tecnico,
-        preco_hora: precoHora // Sobrescrever com número válido
+        preco_hora: precoHora
     };
 
     console.log('✅ Técnico selecionado:', tecnicoSelecionado);
@@ -204,6 +208,10 @@ function selecionarTecnico(tecnico) {
 }
 
 function abrirModalContratacao() {
+    // Adiciona a classe modal-open para esconder navbar e footer
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+    
     const modal = document.getElementById('modalContratacao');
     const infoBox = document.getElementById('tecnicoSelecionadoInfo');
 
@@ -225,7 +233,6 @@ function abrirModalContratacao() {
     document.getElementById('cepStatus').textContent = 'Digite o CEP para buscar o endereço automaticamente';
     document.getElementById('cepStatus').style.color = 'var(--cinza-medio)';
 
-    // ✅ Adicionar listeners apenas uma vez
     if (!cepListenersAdded) {
         const cepInput = document.getElementById('cepServico');
         cepInput.addEventListener('input', (e) => formatarCEP(e.target));
@@ -306,10 +313,18 @@ async function confirmarContratacao(event) {
 }
 
 function fecharModal() {
+    // Remove a classe modal-open para mostrar navbar e footer novamente
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    
     document.getElementById('modalTecnicos').style.display = 'none';
 }
 
 function fecharModalContratacao() {
+    // Remove a classe modal-open para mostrar navbar e footer novamente
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    
     document.getElementById('modalContratacao').style.display = 'none';
     tecnicoSelecionado = null;
 }
@@ -321,11 +336,10 @@ function escapeHtml(text) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+        .replace(/'/g, '&#39;');
 }
 
 window.onclick = function(event) {
-    const modalTecnicos = document.getElementById('modalTecnicos');
     const modalContratacao = document.getElementById('modalContratacao');
 
     if (event.target === modalTecnicos) {
@@ -335,3 +349,4 @@ window.onclick = function(event) {
         fecharModalContratacao();
     }
 }
+

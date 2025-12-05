@@ -54,6 +54,10 @@ let protocoloAtualAvaliacao = null;
 function abrirModalAvaliacao(protocolo, nomeTecnico, notaExistente) {
     protocoloAtualAvaliacao = protocolo;
     
+    // Adiciona a classe modal-open para esconder navbar e footer
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+    
     const protocoloInput = document.getElementById('protocoloAvaliacao');
     const nomeTecnicoEl = document.getElementById('nomeTecnicoAvaliacao');
     const notaInput = document.getElementById('notaAvaliacao');
@@ -76,6 +80,10 @@ function abrirModalAvaliacao(protocolo, nomeTecnico, notaExistente) {
 }
 
 function fecharModalAvaliacao() {
+    // Remove a classe modal-open para mostrar navbar e footer novamente
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    
     const modal = document.getElementById('modalAvaliacao');
     if (modal) modal.style.display = 'none';
     protocoloAtualAvaliacao = null;

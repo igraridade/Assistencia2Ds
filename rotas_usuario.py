@@ -84,7 +84,7 @@ def api_usuario_detalhe(user_id):
 
 @bp.route('/api/usuarios/novo', methods=['POST'])
 def api_usuario_criar():
-    from app import get_conn  # ✅ Import local
+    from app import get_conn
 
     try:
         # Aceita tanto JSON quanto form data
@@ -211,6 +211,54 @@ def api_usuario_criar():
         flash(f'Erro ao realizar cadastro: {str(e)}', 'danger')
         return redirect(url_for('pagina.home'))
 
+@bp.route('/api/admin/usuarios/novo', methods=['POST'])
+def api_admin_usuario_criar():
+    # exige login e admin
+    if 'usuario_id' not in session:
+        return jsonify({'success': False, 'error': 'Não autenticado'}), 401
+    if not is_admin():
+        return jsonify({'success': False, 'error': 'Apenas administradores podem criar usuários'}), 403
+
+    try:
+        data = request.get_json() or {}
+
+        nome = (data.get('nome') or '').strip()
+        email = (data.get('email') or '').strip().lower()
+        telefone = (data.get('telefone') or '').strip()
+        senha = data.get('senha') or ''
+        admin_flag = 1 if data.get('admin') else 0
+
+        if not nome or not email or not senha:
+            return jsonify({'success': False, 'error': 'Nome, e-mail e senha são obrigatórios'}), 400
+
+        existe = fetch_one("SELECT id_usuario FROM usuario WHERE email = %s", (email,))
+        if existe:
+            return jsonify({'success': False, 'error': 'Este e-mail já está cadastrado'}), 400
+
+        # opcional: vincular à mesma empresa do admin logado (se existir)
+        usuario_atual = fetch_one(
+            "SELECT id_empresa_cliente_fk FROM usuario WHERE id_usuario = %s",
+            (session['usuario_id'],)
+        )
+        id_empresa_fk = usuario_atual['id_empresa_cliente_fk'] if usuario_atual else None
+
+        senha_hash = generate_password_hash(senha)
+        rows = exec_write("""
+            INSERT INTO usuario (nome, email, telefone, senha, admin, id_empresa_cliente_fk)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (nome, email, telefone, senha_hash, admin_flag, id_empresa_fk))
+
+        cache.clear()
+
+        if rows == 0:
+            return jsonify({'success': False, 'error': 'Falha ao inserir usuário'}), 500
+
+        novo = fetch_one("SELECT id_usuario as id FROM usuario WHERE email = %s", (email,))
+        return jsonify({'success': True, 'usuario_id': novo['id']}), 201
+
+    except Exception as e:
+        logger.exception("api_admin_usuario_criar failed")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 

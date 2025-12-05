@@ -677,10 +677,23 @@ fieldset legend {
   text-align: center;
 }
 
-/* Bloquear scroll da página */
-body.modal-open {
-  overflow: hidden;
+/* ========== Esconde navbar e footer quando modal está aberto ========== */
+body.modal-open header {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s ease;
 }
+
+body.modal-open footer {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}
+
 /* ========== Utilitários ========== */
 .center { display: grid; place-items: center; }
 .hidden { display: none !important; }
@@ -696,27 +709,284 @@ body.modal-open {
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
 
+/* ========== CORREÇÃO DO FOOTER ========== */
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header fixo */
+header {
+  flex-shrink: 0;
+}
+
+/* Main cresce conforme o conteúdo */
+.main,
+.main-home,
+.main-empresas,
+.main-tecnicos,
+.main-usuarios,
+.main-servicos,
+.main-alocacoes,
+.main-dashboard,
+.main-sobrenos,
+.main-ajuda,
+.main-meus-servicos,
+.main-contratar {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+/* Footer sempre no fundo */
+footer {
+  flex-shrink: 0;
+  margin-top: auto;
+  width: 100%;
+}
+
+
 /* ========== Responsividade ========== */
 @media (max-width: 1100px) {
   .bigtech-features { gap: 24px; }
 }
+/* ========== RESPONSIVIDADE MELHORADA ========== */
 @media (max-width: 900px) {
-  .hamburger { display: inline-block; }
-  .menu { display: none; }
-  .menu.open {
-    display: flex; flex-direction: column; gap: 2px; position: absolute; right: 16px; top: 64px;
-    background: var(--branco); border: 1.5px solid var(--cinza-claro); border-radius: 14px; padding: 8px;
-    box-shadow: var(--shadow-xl);
+  /* Header - Menu hamburger */
+  header {
+    padding: 0 20px;
   }
-  .hero-flex { flex-direction: column; gap: 32px; }
-  .hero-content { text-align: center; max-width: 100%; }
-  .bigtech-features { grid-template-columns: 1fr 1fr; }
+
+  .hamburger {
+    display: inline-block;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .menu.open {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: absolute;
+    right: 16px;
+    top: 64px;
+    background: var(--branco);
+    border: 1.5px solid var(--cinza-claro);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: var(--shadow-xl);
+    z-index: 100;
+  }
+
+  .menu.open a {
+    width: 200px;
+    padding: 12px 16px;
+  }
+
+  /* Hero */
+  .hero-flex {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .hero-content {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  /* Features */
+  .bigtech-features {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 18px 14px;
+    font-size: 0.9rem;
+  }
 }
-@media (max-width: 580px) {
-  .bigtech-hero { padding-top: 20px; }
-  .bigtech-title { font-size: 2.1rem; }
-  .bigtech-title span { font-size: 1.23rem; }
-  .bigtech-features { grid-template-columns: 1fr; }
-  .bigtech-card, .bigtech-section.bg-blur { max-width: 98vw; }
-  section { margin-bottom: 28px; }
+
+@media (max-width: 600px) {
+  /* Header */
+  header {
+    padding: 0 16px;
+    min-height: 60px;
+  }
+
+  .logo .brand {
+    font-size: 1.1rem;
+  }
+
+  .hamburger {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hamburger span {
+    margin: 6px 7px;
+  }
+
+  .menu.open {
+    right: 12px;
+    top: 60px;
+    width: calc(100vw - 24px);
+    max-width: 300px;
+  }
+
+  .top-user .user-name {
+    display: none;
+  }
+
+  .top-user {
+    gap: 6px;
+  }
+
+  .btn-link {
+    padding: 7px 14px;
+    font-size: 0.9rem;
+  }
+
+  /* Hero */
+  .bigtech-hero {
+    padding-top: 32px;
+    padding-bottom: 20px;
+  }
+
+  .bigtech-title {
+    font-size: 2rem;
+  }
+
+  .bigtech-title span {
+    font-size: 1.3rem;
+  }
+
+  .bigtech-desc {
+    font-size: 1.05rem;
+  }
+
+  .bigtech-cta {
+    padding: 12px 32px;
+    font-size: 1rem;
+  }
+
+  /* Features */
+  .bigtech-features {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .bigtech-card {
+    max-width: 100%;
+  }
+
+  /* Flash messages */
+  .flash-container {
+    padding: 0 12px;
+  }
+
+  .flash {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Footer */
+  footer {
+    padding: 16px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Modais */
+  .modal-content {
+    width: min(540px, 96vw);
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    grid-template-columns: 32px 1fr 32px;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+  }
+
+  .modal .close,
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .modal-body,
+  .modal-form,
+  .modal-content > form {
+    padding: 20px 24px;
+  }
+
+  .modal-actions {
+    padding: 20px 24px;
+    flex-direction: column;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+  }
+
+  /* Seções gerais */
+  section {
+    margin-bottom: 32px;
+  }
+}
+
+@media (max-width: 400px) {
+  /* Header */
+  header {
+    padding: 0 12px;
+  }
+
+  .logo .brand {
+    font-size: 1rem;
+  }
+
+  .hamburger {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Hero */
+  .bigtech-title {
+    font-size: 1.7rem;
+  }
+
+  .bigtech-title span {
+    font-size: 1.1rem;
+  }
+
+  .bigtech-desc {
+    font-size: 1rem;
+  }
+
+  .bigtech-cta {
+    padding: 11px 28px;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  footer {
+    padding: 14px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+#dialoq-btn {
+  cursor: pointer;
 }

@@ -7,6 +7,9 @@ import time
 from mysql.connector import pooling, errors as mysql_errors
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date, timedelta
+import pytz
+
+tz_brasil = pytz.timezone('America/Sao_Paulo')
 
 # ========== CONFIGURAÇÃO DO APP ==========
 app = Flask(__name__)

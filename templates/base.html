@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>{% block title %}IGECH TECH{% endblock %}</title>
 
+  <!-- CSS global -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css', v=1) }}"/>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/alerts.css') }}">
+  <!-- CSS de Alertas -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/alerts.css') }}"/>
 
   {% block page_css %}{% endblock %}
 </head>
@@ -21,28 +23,28 @@
   </div>
 
   <nav class="site-nav">
-    <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainMenu">
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu"
+            aria-expanded="false" aria-controls="mainMenu">
       <span></span><span></span><span></span>
     </button>
-<ul id="mainMenu" class="menu">
-  {% if session.get('admin') %}
-    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-    <li><a href="{{ url_for('empresas') }}">Empresas</a></li>
-    <li><a href="{{ url_for('tecnicos') }}">Técnicos</a></li>
-    <li><a href="{{ url_for('usuarios') }}">Usuários</a></li>
-    <li><a href="{{ url_for('alocacoes') }}">Alocações</a></li>
-    <li><a href="{{ url_for('servicos') }}">Serviços</a></li>
-  {% elif session.get('usuario_id') %}
-    <li><a href="{{ url_for('contratar_servico') }}" class="menu-destaque">🛠️ Contratar Serviço</a></li>
-    <li><a href="{{ url_for('servicos') }}">Meus Serviços</a></li>
-  {% else %}
-    <li><a href="{{ url_for('contratar_servico') }}" class="menu-destaque">🛠️ Contratar Serviço</a></li>
-  {% endif %}
 
-  <li><a href="{{ url_for('sobre_nos') }}">Sobre Nós</a></li> <!-- ✅ ADICIONAR AQUI -->
-  <li><a href="{{ url_for('ajuda') }}">Ajuda</a></li>
-</ul>
-
+    <ul id="mainMenu" class="menu">
+      {% if session.get('admin') %}
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('empresas') }}">Empresas</a></li>
+        <li><a href="{{ url_for('tecnicos') }}">Técnicos</a></li>
+        <li><a href="{{ url_for('usuarios') }}">Usuários</a></li>
+        <li><a href="{{ url_for('alocacoes') }}">Alocações</a></li>
+        <li><a href="{{ url_for('servicos') }}">Serviços</a></li>
+      {% elif session.get('usuario_id') %}
+        <li><a href="{{ url_for('contratar_servico') }}" class="menu-destaque">🛠️ Contratar Serviço</a></li>
+        <li><a href="{{ url_for('servicos') }}">Meus Serviços</a></li>
+      {% else %}
+        <li><a href="{{ url_for('contratar_servico') }}" class="menu-destaque">🛠️ Contratar Serviço</a></li>
+      {% endif %}
+      <li><a href="{{ url_for('sobre_nos') }}">Sobre Nós</a></li>
+      <li><a href="{{ url_for('ajuda') }}">Ajuda</a></li>
+    </ul>
   </nav>
 
   <div class="top-user">
@@ -50,6 +52,7 @@
       <button id="btnLogin" class="btn" type="button" data-open="modalLogin">Login</button>
       <button id="btnCadastro" class="btn" type="button" data-open="modalCadastro">Cadastro</button>
     {% else %}
+      <span class="user-badge" aria-hidden="true"></span>
       <span class="user-name">{{ session.get('usuario_nome') }}</span>
       <a href="{{ url_for('logout') }}" id="btnLogout" class="btn-link">Sair</a>
     {% endif %}
@@ -83,12 +86,17 @@
   <p>2025 IGECH TECH — Todos os direitos reservados.</p>
 </footer>
 
-<!-- Modal Login -->
+<!-- ===================== MODAL LOGIN ===================== -->
 <div id="modalLogin" class="modal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="loginTitle" aria-describedby="loginDesc">
-    <button type="button" class="close" id="closeLogin" aria-label="Fechar">&times;</button>
+  <div class="modal-content" role="dialog" aria-modal="true"
+       aria-labelledby="loginTitle" aria-describedby="loginDesc">
+    <button type="button" class="close" aria-label="Fechar">&times;</button>
+
     <h2 id="loginTitle">Login</h2>
-    <p id="loginDesc" class="sr-only">Entre com seu e-mail e senha para acessar o sistema.</p>
+    <p id="loginDesc" class="sr-only">
+      Entre com seu e-mail e senha para acessar o sistema.
+    </p>
+
     <form method="POST" action="{{ url_for('login') }}">
       <label for="login_email">Email</label>
       <input type="email" id="login_email" name="email" required autocomplete="username"/>
@@ -100,101 +108,148 @@
 
       <p class="modal-switch">
         Não tem conta?
-        <button type="button" class="btn-link" data-switch="modalCadastro">Criar conta</button>
+        <button type="button" class="btn-link" data-switch="modalCadastro">
+          Criar conta
+        </button>
       </p>
     </form>
   </div>
 </div>
 
-<!-- Modal Cadastro -->
+<!-- ===================== MODAL CADASTRO ===================== -->
 <div id="modalCadastro" class="modal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cadastroTitle" aria-describedby="cadastroDesc">
-    <button type="button" class="close" id="closeCadastro" aria-label="Fechar">&times;</button>
-    <h2 id="cadastroTitle">Cadastro de Usuário</h2>
-    <p id="cadastroDesc" class="sr-only">Informe seus dados pessoais e da empresa onde trabalha.</p>
-    <form method="POST" action="{{ url_for('usuario.api_usuario_criar') }}" id="formCadastro">
+  <div class="modal-content" role="dialog" aria-modal="true"
+       aria-labelledby="cadastroTitle" aria-describedby="cadastroDesc">
+    <button type="button" class="close" aria-label="Fechar">&times;</button>
 
+    <h2 id="cadastroTitle">Cadastro</h2>
+    <p id="cadastroDesc" class="sr-only">
+      Informe seus dados para criar uma conta.
+    </p>
 
-      <!-- Dados Pessoais -->
-      <fieldset style="border: none; padding: 0; margin-bottom: 20px;">
-        <legend style="font-weight: bold; margin-bottom: 10px;">📋 Dados Pessoais</legend>
-        <label for="cadastro_nome">Nome Completo *</label>
-        <input type="text" id="cadastro_nome" name="nome" required placeholder="Ex: João Silva"/>
-        <label for="cadastro_email">Email *</label>
-        <input type="email" id="cadastro_email" name="email" required autocomplete="email" placeholder="seu@email.com"/>
-        <label for="cadastro_senha">Senha *</label>
-        <input type="password" id="cadastro_senha" name="senha" required autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres"/>
-        <label for="cadastro_telefone">Telefone *</label>
-        <input type="tel" id="cadastro_telefone" name="telefone" required placeholder="(11) 98765-4321"/>
-      </fieldset>
+    <!-- CORRIGIDO: usa endpoint que existe (ajuste se quiser outro) -->
+    <form id="formCadastro" method="POST" action="{{ url_for('usuario.api_usuario_criar') }}">
+      <label for="cadastro_nome">Nome</label>
+      <input type="text" id="cadastro_nome" name="nome" required />
 
-      <!-- Dados da Empresa -->
-      <fieldset style="border: none; padding: 0; margin-bottom: 20px;">
-        <legend style="font-weight: bold; margin-bottom: 10px;">🏢 Empresa onde Trabalha</legend>
-        <label for="cadastro_empresa_cnpj">CNPJ da Empresa *</label>
-        <input type="text"
-               id="cadastro_empresa_cnpj"
-               name="empresa_cnpj"
-               required
-               maxlength="18"
-               placeholder="00.000.000/0000-00"/>
-        <small style="display: block; color: #666; font-size: 0.85rem; margin-top: 4px;">
-          Informe o CNPJ da empresa onde você trabalha
-        </small>
-        <div id="cnpj_status" style="margin-top: 8px; font-size: 0.9rem;"></div>
+      <label for="cadastro_email">Email</label>
+      <input type="email" id="cadastro_email" name="email" required autocomplete="email"/>
 
-        <!-- Área para mostrar dados da empresa (API CNPJá) -->
-        <div id="dados_empresa_encontrada" style="display: none; margin-top: 15px; padding: 15px; background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 8px;">
-          <h4 style="margin: 0 0 10px 0; color: #10b981; font-size: 0.95rem;">✅ Dados da Empresa (CNPJá)</h4>
-          <div id="empresa_info" style="font-size: 0.85rem; line-height: 1.6;"></div>
-        </div>
+      <label for="cadastro_senha">Senha</label>
+      <input type="password" id="cadastro_senha" name="senha" required autocomplete="new-password"/>
 
-        <!-- Email manual se a API não retornar -->
-        <div id="campo_email_empresa" style="display:none; margin-top:12px;">
-          <label for="input_email_empresa">Email da Empresa *</label>
-          <input type="email" id="input_email_empresa" name="empresa_email_manual" placeholder="contato@empresa.com.br"/>
-          <small style="display:block;font-size:0.9em;color:#666;">Se não houver email oficial na Receita</small>
-        </div>
+      <label for="cadastro_telefone">Telefone</label>
+      <input type="tel" id="cadastro_telefone" name="telefone" required />
 
-        <div id="campo_nome_empresa" style="display: none; margin-top: 15px;">
-          <label for="cadastro_empresa_nome">Nome da Empresa *</label>
-          <input type="text"
-                 id="cadastro_empresa_nome"
-                 name="empresa_nome"
-                 placeholder="Ex: Google Brasil Ltda"/>
-          <small style="display: block; color: #666; font-size: 0.85rem; margin-top: 4px;">
-            Informe o nome da empresa
-          </small>
-        </div>
-      </fieldset>
+      <!-- Campos de empresa esperados pelo modals.js -->
+      <label for="cadastro_empresa_cnpj">CNPJ da empresa</label>
+      <input type="text" id="cadastro_empresa_cnpj" name="empresa_cnpj"
+             placeholder="00.000.000/0000-00" />
+      <small id="cnpj_status"></small>
+
+      <div id="campo_nome_empresa" style="display:none;">
+        <label for="cadastro_empresa_nome">Nome da empresa</label>
+        <input type="text" id="cadastro_empresa_nome" name="empresa_nome"/>
+      </div>
+
+      <div id="campo_email_empresa" style="display:none;">
+        <label for="cadastro_empresa_email">Email da empresa</label>
+        <input type="email" id="cadastro_empresa_email"
+               name="empresa_email_manual"/>
+      </div>
+
+      <div id="dados_empresa_encontrada" style="display:none; margin-top:.5rem;">
+        <div id="empresa_info"></div>
+      </div>
 
       <button type="submit" class="btn">Registrar</button>
+
       <p class="modal-switch">
         Já tem conta?
-        <button type="button" class="btn-link" data-switch="modalLogin">Entrar</button>
+        <button type="button" class="btn-link" data-switch="modalLogin">
+          Entrar
+        </button>
       </p>
     </form>
   </div>
 </div>
 
-<!-- MODAL DE PENDENTES (para admin na tela de usuários) -->
-<div id="modalPendentes" class="modal" aria-hidden="true">
-  <div class="modal-content" style="max-width:500px;">
-    <div class="modal-header">
-      <h2>Usuários Pendentes de Aprovação</h2>
-      <button type="button" class="close" onclick="closeModalPendentes()" aria-label="Fechar">&times;</button>
-    </div>
-    <div class="modal-body" id="pendentesList">
-      <!-- Conteúdo via JS -->
-    </div>
-  </div>
-</div>
+<!-- ============== JS GLOBAL ============== -->
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const hamburger = document.querySelector('.hamburger');
+  const menu = document.querySelector('.menu');
 
-<script src="https://bots.easy-peasy.ai/chat.min.js" data-chat-url="https://bots.easy-peasy.ai/bot/8a13ab86-bb82-4ce8-96c5-81f5d57e1481" data-btn-position="bottom-right" data-widget-btn-color="#3b8cff" defer> </script>
+  if (hamburger && menu) {
+    hamburger.addEventListener('click', function() {
+      menu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!hamburger.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
+
+    const menuLinks = menu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        menu.classList.remove('open');
+      });
+    });
+  }
+});
+</script>
+
+<script>
+(function() {
+  'use strict';
+
+  function closeFlash(btn) {
+    var flash = btn.parentElement;
+    flash.style.opacity = '0';
+    flash.style.transform = 'translateY(-10px)';
+    setTimeout(function() {
+      flash.remove();
+    }, 300);
+  }
+
+  function autoCloseFlash(flash) {
+    setTimeout(function() {
+      flash.style.opacity = '0';
+      flash.style.transform = 'translateY(-10px)';
+      setTimeout(function() {
+        flash.remove();
+      }, 300);
+    }, 5000);
+  }
+
+  window.addEventListener('load', function() {
+    var closeButtons = document.querySelectorAll('.alert-close');
+    for (var i = 0; i < closeButtons.length; i++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          closeFlash(btn);
+        });
+      })(closeButtons[i]);
+    }
+
+    var flashes = document.querySelectorAll('.alert');
+    for (var j = 0; j < flashes.length; j++) {
+      autoCloseFlash(flashes[j]);
+    }
+  });
+})();
+</script>
+
+<script src="https://unpkg.com/imask"></script>
+<script src="{{ url_for('static', filename='js/masks.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/alerts.js', v=2) }}"></script>
 <script src="{{ url_for('static', filename='js/modals.js', v=3) }}"></script>
+
+<script src="https://bots.easy-peasy.ai/chat.min.js" data-chat-url="https://bots.easy-peasy.ai/bot/8a13ab86-bb82-4ce8-96c5-81f5d57e1481" data-btn-position="bottom-right" data-widget-btn-color="#3b8cff" defer> </script>
 
 {% block page_js %}{% endblock %}
 

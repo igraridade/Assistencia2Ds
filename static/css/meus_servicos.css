@@ -542,12 +542,12 @@
 
 /* Animações */
 @keyframes fadeIn {
-    from { 
-        opacity: 0; 
+    from {
+        opacity: 0;
         transform: translateY(10px);
     }
-    to { 
-        opacity: 1; 
+    to {
+        opacity: 1;
         transform: translateY(0);
     }
 }
@@ -557,66 +557,193 @@
 }
 
 /* Responsive */
+/* ========== RESPONSIVIDADE MOBILE ========== */
 @media (max-width: 768px) {
-    .main-meus-servicos {
-        padding: 24px 16px;
-    }
-    
-    .page-title {
-        font-size: 2rem;
-    }
-    
-    .page-subtitle {
-        font-size: 1rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    
-    .filters-row {
-        flex-direction: column;
-    }
-    
-    .filter-group {
-        width: 100%;
-        min-width: 100%;
-    }
-    
-    .servico-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .servico-info-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .servico-protocolo {
-        font-size: 1.2rem;
-    }
+  .main-meus-servicos {
+    padding: 24px 16px;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Stats em 2 colunas */
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .stat-card {
+    padding: 18px 16px;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  /* Filtros empilhados */
+  .filters-section {
+    padding: 16px 18px;
+  }
+
+  .filters-row {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  /* Cards de serviço */
+  .servico-card {
+    padding: 20px 16px;
+  }
+
+  .servico-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .servico-protocolo {
+    font-size: 1.2rem;
+  }
+
+  .servico-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Modal */
+  .modal-container {
+    width: 95%;
+    padding: 4px;
+  }
+
+  .modal-header {
+    padding: 20px 22px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .modal-body {
+    padding: 22px;
+  }
 }
 
-@media (max-width: 480px) {
-    .main-meus-servicos {
-        padding: 20px 12px;
-    }
-    
-    .page-title {
-        font-size: 1.6rem;
-    }
-    
-    .stat-card {
-        padding: 20px;
-    }
-    
-    .stat-value {
-        font-size: 2rem;
-    }
-    
-    .servico-card {
-        padding: 20px;
-    }
+@media (max-width: 600px) {
+  .main-meus-servicos {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  /* Stats em coluna única */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px 14px;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+  }
+
+  /* Cards de serviço menores */
+  .servico-card {
+    padding: 18px 14px;
+  }
+
+  .servico-protocolo {
+    font-size: 1.1rem;
+  }
+
+  .badge {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+  }
+
+  .info-icon {
+    font-size: 1rem;
+  }
+
+  .info-label {
+    font-size: 0.8rem;
+  }
+
+  .info-value {
+    font-size: 0.95rem;
+  }
+
+  /* Botões */
+  .btn-avaliar {
+    width: 100%;
+    padding: 11px 20px;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary {
+    padding: 11px 24px;
+    font-size: 0.95rem;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 60px 16px;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+  }
+
+  .empty-state-title {
+    font-size: 1.3rem;
+  }
+
+  .empty-state-text {
+    font-size: 0.95rem;
+  }
+
+  /* Modal */
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .estrelas-grandes {
+    font-size: 2rem;
+  }
+
+  .nota-texto {
+    font-size: 1.6rem;
+  }
 }
+
+@media (max-width: 400px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+  }
+}
+

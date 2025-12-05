@@ -526,11 +526,11 @@ body {
   .bigtech-title {
     font-size: 2.3rem;
   }
-  
+
   .bigtech-title span {
     font-size: 1.6rem;
   }
-  
+
   .hero-stats {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -538,35 +538,35 @@ body {
     padding-top: 1.5rem;
     margin-top: 1.5rem;
   }
-  
+
   .stat-number {
     font-size: 2rem;
   }
-  
+
   .hero-actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .bigtech-cta, .bigtech-cta-secondary {
     width: 100%;
     padding: 14px 28px;
   }
-  
+
   .cta-features {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
   }
-  
+
   .cta-container h2 {
     font-size: 1.8rem;
   }
-  
+
   .cta-container > p {
     font-size: 1rem;
     margin-bottom: 2rem;
   }
-  
+
   .cta-feature {
     padding: 18px 16px;
     font-size: 0.9rem;
@@ -575,38 +575,38 @@ body {
     border-radius: 20px;
     gap: 8px;
   }
-  
+
   .check-icon {
     width: 40px;
     height: 40px;
     font-size: 1.2rem;
     flex-shrink: 0;
   }
-  
+
   .cards {
     grid-template-columns: 1fr;
     gap: 25px;
   }
-  
+
   .card {
     padding: 35px 25px;
   }
-  
+
   .about {
     flex-direction: column;
     gap: 40px;
     padding: 70px 8%;
   }
-  
+
   .about-text,
   .about-img {
     max-width: 100%;
   }
-  
+
   .features {
     padding: 70px 8%;
   }
-  
+
   .features h2 {
     font-size: 1.8rem;
   }
@@ -619,63 +619,120 @@ body {
 }
 
 @media (max-width: 600px) {
+  /* Hero section */
   .hero {
-    padding: 50px 6%;
-    min-height: 70vh;
+    padding: 40px 5%;
+    min-height: 65vh;
   }
 
   .bigtech-title {
     font-size: 1.8rem;
+    margin-bottom: 0.6rem;
   }
-  
+
   .bigtech-title span {
     font-size: 1.2rem;
     margin-bottom: 1rem;
+    letter-spacing: 1px;
   }
 
   .bigtech-desc {
     font-size: 1rem;
     margin-bottom: 1.2rem;
+    line-height: 1.6;
   }
 
-  .bigtech-cta {
-    padding: 12px 24px;
-    font-size: 0.9rem;
+  /* Botões do hero */
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+    margin-top: 1rem;
+  }
+
+  .bigtech-cta,
+  .bigtech-cta-secondary {
+    width: 100%;
+    padding: 14px 32px;
+    font-size: 0.95rem;
+  }
+
+  /* Stats do hero */
+  .hero-stats {
+    gap: 20px;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .stat-number {
+    font-size: 2.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+  }
+
+  /* Features */
+  .features {
+    padding: 50px 5%;
+  }
+
+  .features h2 {
+    font-size: 1.6rem;
+  }
+
+  .features > p {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
   }
 
   .cards {
-    gap: 18px;
+    gap: 16px;
   }
-  
+
   .card {
     padding: 28px 18px;
   }
-  
+
   .card .icon {
     font-size: 2.8rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
   }
 
   .card h3 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
 
-  .about {
-    padding: 60px 6%;
+  .card p {
+    font-size: 0.95rem;
   }
-  
+
+  /* About */
+  .about {
+    padding: 50px 5%;
+  }
+
+  .about-text h2 {
+    font-size: 1.6rem;
+  }
+
+  .about-text p {
+    font-size: 0.95rem;
+  }
+
+  .about-text li {
+    font-size: 0.95rem;
+  }
+
   .about-img img {
     max-width: 100%;
   }
 
-  .features {
-    padding: 60px 6%;
-  }
-
+  /* CTA Section */
   .cta-section {
-    padding: 60px 5%;
+    padding: 50px 5%;
     border-radius: 20px;
-    margin: 30px 2%;
+    margin: 24px 3%;
   }
 
   .cta-container h2 {
@@ -694,19 +751,28 @@ body {
   }
 
   .cta-feature {
-    padding: 14px 12px;
-    font-size: 0.85rem;
-    flex-direction: column;
+    padding: 16px 14px;
+    font-size: 0.9rem;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
     border-radius: 16px;
   }
 
   .check-icon {
     width: 36px;
     height: 36px;
-    font-size: 1rem;
-  }
-
-  .hero-stats {
-    gap: 15px;
+    font-size: 1.1rem;
   }
 }
+
+@media (max-width: 400px) {
+  .bigtech-title {
+    font-size: 1.5rem;
+  }
+
+  .bigtech-title span {
+    font-size: 1rem;
+  }
+}
+

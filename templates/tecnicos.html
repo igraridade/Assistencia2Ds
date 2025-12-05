@@ -13,36 +13,54 @@
       <h1 class="hero-title">Técnicos</h1>
       <p class="hero-desc">Gerencie e acompanhe todos os técnicos cadastrados no sistema</p>
     </div>
-    <!-- Botão principal para abrir o modal de cadastro -->
     <button class="btn-add-tecnico" id="btnAddTecnico">
       <span class="btn-icon">+</span>
       Novo Técnico
     </button>
   </div>
 
-  <!-- Cards de resumo (somente total e ativos) -->
-  <section class="tecnicos-summary">
+  <div class="tecnicos-summary">
     <div class="summary-card">
-      <span class="summary-icon summary-blue"></span>
+      <div class="summary-icon summary-blue"></div>
       <div class="summary-info">
         <div class="summary-value" id="total-tecnicos">0</div>
         <div class="summary-label">Total de Técnicos</div>
       </div>
     </div>
+
     <div class="summary-card">
-      <span class="summary-icon summary-green"></span>
+      <div class="summary-icon summary-cyan"></div>
       <div class="summary-info">
         <div class="summary-value" id="tecnicos-ativos">0</div>
-        <div class="summary-label">Ativos</div>
+        <div class="summary-label">Técnicos Ativos</div>
       </div>
     </div>
-  </section>
 
-  <!-- Filtros e busca (sem coisas de alocação/disponível) -->
+    <div class="summary-card">
+      <div class="summary-icon summary-violet"></div>
+      <div class="summary-info">
+        <div class="summary-value" id="tecnicos-senior">0</div>
+        <div class="summary-label">Nível Senior</div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon summary-indigo"></div>
+      <div class="summary-info">
+        <div class="summary-value" id="total-contratos">0</div>
+        <div class="summary-label">Contratos Ativos</div>
+      </div>
+    </div>
+  </div>
+
   <section class="filter-section">
     <div class="search-box">
       <span class="search-icon"></span>
-      <input type="text" placeholder="Buscar por nome, especialidade ou empresa..." class="search-input" id="searchTecnico">
+      <input
+        type="text"
+        id="searchTecnico"
+        class="search-input"
+        placeholder="Buscar por nome, especialidade ou empresa...">
     </div>
     <div class="filter-controls">
       <select class="filter-select" id="filterEspecialidade">
@@ -60,13 +78,12 @@
     </div>
   </section>
 
-  <!-- Tabela de técnicos (SEM coluna de alocações) -->
   <section class="tecnicos-table-section">
     <div class="table-header">
       <h2 class="section-title">Lista de Técnicos</h2>
-      <!-- Mostra quantos técnicos estão aparecendo na tabela após filtro -->
       <span class="table-count" id="tableCount">0 técnicos encontrados</span>
     </div>
+
     <div class="table-wrapper">
       <table class="tecnicos-table">
         <thead>
@@ -75,19 +92,23 @@
             <th>Nome</th>
             <th>Especialidade</th>
             <th>Nível</th>
-            <th>💰 R$/hora</th>
+            <th>R$/hora</th>
             <th>Empresa Atual</th>
             <th>Status</th>
+            <th>Alocações</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody id="tecnicosTableBody">
           <tr class="empty-state">
-            <td colspan="8">
+            <td colspan="9">
               <div class="empty-message">
                 <span class="empty-icon"></span>
                 <p>Nenhum técnico cadastrado ainda</p>
-                <button class="btn-empty-action" onclick="document.getElementById('btnAddTecnico').click()">
+                <button
+                  class="btn-empty-action"
+                  type="button"
+                  onclick="document.getElementById('btnAddTecnico').click()">
                   Cadastrar Primeiro Técnico
                 </button>
               </div>
@@ -98,132 +119,100 @@
     </div>
   </section>
 
-  <!-- Cards de informações gerais (sem falar de alocação/disponível) -->
-  <section class="info-cards">
-    <div class="info-card">
-      <span class="info-icon info-blue"></span>
-      <div>
-        <div class="info-title">Gestão de Técnicos</div>
-        <div class="info-desc">Cadastre, atualize e mantenha o controle dos profissionais da sua operação.</div>
+  <!-- MODAL TÉCNICO (classe isolada) -->
+  <div id="modalTecnico" class="modal-tecnico" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTecnicoTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTecnicoTitle">Cadastrar Técnico</h3>
+        <button type="button" class="modal-close" id="closeModalTecnico" aria-label="Fechar">×</button>
       </div>
+
+      <form id="formTecnico" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="tecNome">Nome *</label>
+              <input type="text" id="tecNome" name="nome" required>
+            </div>
+
+            <div class="field">
+              <label for="tecEmail">Email</label>
+              <input type="email" id="tecEmail" name="email" placeholder="opcional">
+            </div>
+
+            <div class="field">
+              <label for="tecTelefone">Telefone</label>
+              <input type="tel" id="tecTelefone" name="telefone" placeholder="(00) 00000-0000">
+            </div>
+
+            <div class="field">
+              <label for="tecEspecialidade">Especialidade *</label>
+              <select id="tecEspecialidade" name="especialidade" required>
+                <option value="">Selecione</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+                <option value="Redes">Redes</option>
+                <option value="Suporte">Suporte</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="tecNivelExp">Nível de Experiência *</label>
+              <select id="tecNivelExp" name="nivel_experiencia" required>
+                <option value="Junior">Junior</option>
+                <option value="Pleno">Pleno</option>
+                <option value="Senior">Senior</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="tecPrecoHora">💰 Preço por Hora (R$) *</label>
+              <input
+                type="number"
+                id="tecPrecoHora"
+                name="preco_hora"
+                step="0.01"
+                min="0"
+                max="9999.99"
+                value="100.00"
+                placeholder="100.00"
+                required>
+              <span class="help">Valor cobrado por hora de serviço.</span>
+            </div>
+
+            <div class="field full">
+              <label for="tecEmpresa">Empresa (atual)</label>
+              <select id="tecEmpresa" name="id_empresa_cliente">
+                <option value="">Nenhuma empresa vinculada</option>
+              </select>
+              <span class="help">Opcional: vincule o técnico a uma empresa cliente.</span>
+            </div>
+
+            <div class="field">
+              <label for="tecStatus">Status *</label>
+              <select id="tecStatus" name="status" required>
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="tecObs">Observações</label>
+              <textarea id="tecObs" name="observacoes" rows="3" placeholder="Informações adicionais"></textarea>
+            </div>
+          </div>
+
+          <div class="error-text" id="tecError"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="btnCancelTecnico">Cancelar</button>
+          <button type="submit" class="btn-save" id="btnSaveTecnico">Salvar</button>
+        </div>
+      </form>
     </div>
-    <div class="info-card">
-      <span class="info-icon info-cyan"></span>
-      <div>
-        <div class="info-title">Informações Centralizadas</div>
-        <div class="info-desc">Dados de contato, especialidade e valor hora em um só lugar.</div>
-      </div>
-    </div>
-    <div class="info-card">
-      <span class="info-icon info-violet"></span>
-      <div>
-        <div class="info-title">Histórico Organizado</div>
-        <div class="info-desc">Mantenha um registro completo dos técnicos da sua empresa.</div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<!-- Modal: Cadastro/Edição/Visualização de Técnico -->
-<div id="modalTecnico" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTecnicoTitle">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 class="modal-title" id="modalTecnicoTitle">Cadastrar Técnico</h3>
-      <button type="button" class="close-modal" id="closeModalTecnico" aria-label="Fechar">×</button>
-    </div>
-
-    <form id="formTecnico" autocomplete="off">
-      <div class="form-grid">
-        <!-- Nome -->
-        <div class="field">
-          <label for="tecNome">Nome *</label>
-          <input type="text" id="tecNome" name="nome" required>
-        </div>
-
-        <!-- Email -->
-        <div class="field">
-          <label for="tecEmail">Email</label>
-          <input type="email" id="tecEmail" name="email" placeholder="opcional">
-        </div>
-
-        <!-- Telefone -->
-        <div class="field">
-          <label for="tecTelefone">Telefone</label>
-          <input type="tel" id="tecTelefone" name="telefone" placeholder="(00) 00000-0000">
-        </div>
-
-        <!-- Especialidade -->
-        <div class="field">
-          <label for="tecEspecialidade">Especialidade *</label>
-          <select id="tecEspecialidade" name="especialidade" required>
-            <option value="">Selecione</option>
-            <option value="Hardware">Hardware</option>
-            <option value="Software">Software</option>
-            <option value="Redes">Redes</option>
-            <option value="Suporte">Suporte</option>
-          </select>
-        </div>
-
-        <!-- Nível de Experiência -->
-        <div class="field">
-          <label for="tecNivelExp">Nível de Experiência *</label>
-          <select id="tecNivelExp" name="nivel_experiencia" required>
-            <option value="Junior">Junior</option>
-            <option value="Pleno">Pleno</option>
-            <option value="Senior">Senior</option>
-          </select>
-        </div>
-
-        <!-- Preço por Hora -->
-        <div class="field">
-          <label for="tecPrecoHora">💰 Preço por Hora (R$) *</label>
-          <input
-            type="number"
-            id="tecPrecoHora"
-            name="preco_hora"
-            step="0.01"
-            min="0"
-            max="9999.99"
-            value="100.00"
-            placeholder="100.00"
-            required>
-          <div class="help">Valor cobrado por hora de serviço.</div>
-        </div>
-
-        <!-- Empresa atual  -->
-        <div class="field full">
-          <label for="tecEmpresa">Empresa (atual)</label>
-          <select id="tecEmpresa" name="id_empresa_cliente">
-            <option value="">Nenhuma empresa vinculada</option>
-          </select>
-          <div class="help">Opcional: vincule o técnico a uma empresa cliente.</div>
-        </div>
-
-        <!-- Status: apenas ativo/inativo -->
-        <div class="field">
-          <label for="tecStatus">Status *</label>
-          <select id="tecStatus" name="status" required>
-            <option value="ativo">Ativo</option>
-            <option value="inativo">Inativo</option>
-          </select>
-        </div>
-
-        <!-- Observações gerais -->
-        <div class="field full">
-          <label for="tecObs">Observações</label>
-          <textarea id="tecObs" name="observacoes" rows="3" placeholder="Informações adicionais"></textarea>
-        </div>
-      </div>
-
-      <div class="error-text" id="tecError"></div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-cancel" id="btnCancelTecnico">Cancelar</button>
-        <button type="submit" class="btn btn-primary" id="btnSaveTecnico">Salvar</button>
-      </div>
-    </form>
   </div>
-</div>
+</main>
 {% endblock %}
 
 {% block page_js %}

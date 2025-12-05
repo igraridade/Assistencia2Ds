@@ -14,7 +14,7 @@
       Tire dúvidas, acesse recursos e fale com nosso time para acelerar suas soluções!
     </p>
   </section>
-  
+
   <section class="recursos-cards">
     <div class="recursos-card">
       <span class="card-icon card-blue"></span>
@@ -60,7 +60,7 @@
       </details>
     </div>
   </section>
-  
+
   <section class="ajuda-contato">
     <h2 class="ajuda-subtitle">Envie sua dúvida</h2>
     <form method="post" class="form-ajuda">
@@ -76,6 +76,31 @@
     </div>
   </section>
 </main>
+
+<script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+<script>
+// Captura o formulário de dúvida
+const formDuvida = document.querySelector('form'); // ou use ID: document.getElementById('formDuvida')
+
+if (formDuvida) {
+  formDuvida.addEventListener('submit', function(e) {
+    e.preventDefault(); // Impede o envio padrão
+
+    const textarea = this.querySelector('textarea');
+    const duvida = textarea.value.trim();
+
+    if (!duvida) {
+      mostrarPopup('Por favor, descreva sua dúvida antes de enviar.', 'erro');
+      return;
+    }
+
+    // Chama a função que está no alerts.js
+    enviarDuvida(duvida);
+  });
+}
+</script>
+
+
 {% endblock %}
 
 {% block page_js %}

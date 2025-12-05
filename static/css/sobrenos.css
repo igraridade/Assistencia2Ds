@@ -42,29 +42,124 @@
 .sobre-desc { color: var(--cinza-medio); font-size: 1rem; margin-bottom: 6px; font-weight: 400;}
 .negrito { font-weight: 700; color: var(--preto); }
 /* EQUIPE */
-.time-equipe { margin-bottom: 36px;}
-.equipe-cards { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 8px;}
+.time-equipe {
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.time-equipe h2,
+.time-equipe .section-title {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.equipe-cards {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 24px !important;
+  margin-top: 8px !important;
+  max-width: 800px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .equipe-card {
   background: var(--branco);
   border: 1.5px solid var(--azul-claro);
-  border-radius: 12px; box-shadow: 0 2px 12px #2463eb11;
-  padding: 14px 22px; display: flex; flex-direction: column; align-items: center; min-width: 190px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #2463eb11;
+  padding: 20px 22px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: auto !important;
+  width: 100% !important;
+  transition: all 0.2s ease;
+}
+
+.equipe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px #2463eb22;
+  border-color: var(--azul-eletrico);
 }
 .avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--azul-claro); margin-bottom: 7px;}
+
 .nome-equipe { font-size: 1.1rem; font-weight: 700; color: var(--preto); margin-bottom: 4px;}
+
 .cargo-equipe { color: var(--cinza-medio); font-size: 0.97rem; margin-bottom: 2px;}
+
 .badge { padding: 4px 12px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-top: 2px;}
+
 .badge-azul { background: var(--azul-claro); color: var(--azul-escuro);}
+
 .badge-cyan { background: #e0f7fa; color: #06b6d4;}
+
 .badge-violet { background: #ede9fe; color: var(--violet);}
+
 .badge-indigo { background: #e0e7ff; color: var(--azul-indigo); }
+
 /* CONTATO */
 .sobre-contato { background: var(--azul-claro); padding: 22px; border-radius: 14px; margin-bottom: 20px;}
 .contato-info { display: flex; gap: 22px; margin-top: 12px; flex-wrap: wrap;}
 .contato-info span, .contato-info a { font-size: 1rem; color: var(--azul-escuro); text-decoration: none;}
 /* RESPONSIVO */
 @media (max-width: 950px){
-  .missao-historia { flex-direction: column; gap: 16px;}
-  .equipe-cards { flex-direction: column; gap: 14px;}
-  .main-sobrenos { padding: 18px 6vw;}
+ .missao-historia {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .equipe-cards {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .main-sobrenos {
+    padding: 18px 6vw;
+  }
 }
+@media (max-width: 600px) {
+  /* Cabeçalho */
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+  }
+
+  /* Cards de missão */
+  .missao-card {
+    padding: 18px 16px;
+    min-width: 100%;
+  }
+
+  /* Equipe em 2 colunas */
+  .equipe-cards {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .equipe-card {
+    padding: 14px 12px !important;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nome-equipe {
+    font-size: 0.95rem;
+  }
+
+  .cargo-equipe {
+    font-size: 0.85rem;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+}
+

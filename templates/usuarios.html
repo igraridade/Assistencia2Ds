@@ -92,31 +92,9 @@
       </table>
     </div>
   </section>
-
-  <section class="info-cards">
-    <div class="info-card"><span class="info-icon info-violet"></span>
-      <div>
-        <div class="info-title">Permissões e Controle</div>
-        <div class="info-desc">Gerencie perfis, permissões e acesso dos usuários facilmente</div>
-      </div>
-    </div>
-    <div class="info-card"><span class="info-icon info-blue"></span>
-      <div>
-        <div class="info-title">Atividade dos Usuários</div>
-        <div class="info-desc">Acompanhe logins, últimas atividades e status dos usuários</div>
-      </div>
-    </div>
-    <div class="info-card"><span class="info-icon info-cyan"></span>
-      <div>
-        <div class="info-title">Relatórios & Exportação</div>
-        <div class="info-desc">Exportação rápida de dados para relatórios personalizados</div>
-      </div>
-    </div>
-  </section>
 </main>
 
-<!--TELA DE CADASTRO-->
-
+<!-- MODAL DE CADASTRO / EDIÇÃO -->
 <div id="modalUsuario" class="modal" aria-hidden="true">
   <div class="modal-content">
     <div class="modal-header">
@@ -127,59 +105,39 @@
     <form id="formUsuario" class="modal-form">
       <div class="form-group">
         <label for="usuarioNome">Nome Completo *</label>
-        <input
-          type="text"
-          id="usuarioNome"
-          class="form-input"
-          required
-        >
+        <input type="text" id="usuarioNome" class="form-input" required>
       </div>
 
       <div class="form-group">
         <label for="usuarioEmail">E-mail *</label>
-        <input
-          type="email"
-          id="usuarioEmail"
-          class="form-input"
-          required
-        >
+        <input type="email" id="usuarioEmail" class="form-input" required>
       </div>
 
       <div class="form-group">
         <label for="usuarioTelefone">Telefone *</label>
-        <input
-          type="tel"
-          id="usuarioTelefone"
-          class="form-input"
-          required
-        >
+        <input type="tel" id="usuarioTelefone" class="form-input" required>
       </div>
 
       <div class="form-group">
         <label for="usuarioSenha">Senha</label>
-        <input
-          type="password"
-          id="usuarioSenha"
-          class="form-input"
-          placeholder="Deixe em branco para manter a atual"
-        >
+        <input type="password" id="usuarioSenha" class="form-input"
+               placeholder="Deixe em branco para manter a atual">
       </div>
 
       <div class="form-group-checkbox">
         <input type="checkbox" id="usuarioAdmin">
         <label for="usuarioAdmin">Usuário Administrador</label>
       </div>
-    </form>
+
       <div class="modal-actions">
         <button type="button" id="btnCancelUsuario" class="btn-cancel">Cancelar</button>
-        <button type="submit" class="btn-save">Salvar</button>
+        <button type="submit" id="btnSaveUsuario" class="btn-save">Salvar</button>
       </div>
-
+    </form>
   </div>
 </div>
 {% endblock %}
 
 {% block page_js %}
-<script src="{{ url_for('static', filename='js/modals.js') }}"></script>
 <script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
 {% endblock %}

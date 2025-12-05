@@ -266,12 +266,10 @@ def api_servico_criar():
     if 'usuario_id' not in session:
         return jsonify({'error': 'Não autenticado'}), 401
 
-    # REMOVIDO O BLOQUEIO - Agora qualquer usuário autenticado pode criar serviços
     try:
         data = request.get_json()
         user_id = session['usuario_id']
 
-        # Validações
         if not data.get('id_empresa_cliente'):
             return jsonify({'error': 'Empresa é obrigatória'}), 400
         if not data.get('problema'):
@@ -279,7 +277,14 @@ def api_servico_criar():
         if not data.get('prioridade'):
             return jsonify({'error': 'Prioridade é obrigatória'}), 400
 
-        prazo = data.get('prazo_estimado') or (date.today() + timedelta(days=7)).strftime('%Y-%m-%d')
+        # Corrige o fuso horário do prazo
+        prazo_raw = data.get('prazo_estimado')
+        if prazo_raw:
+            # Remove a parte do horário e timezone se vier
+            prazo = prazo_raw.split('T')[0] if 'T' in prazo_raw else prazo_raw
+        else:
+            prazo = (date.today() + timedelta(days=7)).strftime('%Y-%m-%d')
+
         categoria = data.get('categoria', 'Hardware')
 
         try:
@@ -320,6 +325,7 @@ def api_servico_criar():
     except Exception as e:
         logger.exception("api_servico_criar failed")
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 @bp.route('/api/servicos/vitrine', methods=['GET'])
@@ -387,12 +393,18 @@ def api_servicos_exportar():
     try:
         user_id = session['usuario_id']
         user_admin = is_admin()
+
         try:
             if user_admin:
                 servicos = fetch_all("""
-                    SELECT s.protocolo, ec.nome empresa, u.nome cliente,
-                           COALESCE(s.categoria, 'Hardware') categoria,
-                           s.problema, s.prioridade, s.status, s.prazo_estimado
+                    SELECT s.protocolo,
+                           ec.nome as empresa,
+                           u.nome as cliente,
+                           COALESCE(s.categoria, 'Hardware') as categoria,
+                           s.problema,
+                           s.prioridade,
+                           s.status,
+                           s.prazo_estimado
                     FROM servico s
                     JOIN empresa_cliente ec ON s.id_empresa_cliente_fk = ec.id_empresa_cliente
                     LEFT JOIN usuario u ON s.id_usuario_criador = u.id_usuario
@@ -400,9 +412,14 @@ def api_servicos_exportar():
                 """)
             else:
                 servicos = fetch_all("""
-                    SELECT s.protocolo, ec.nome empresa, u.nome cliente,
-                           COALESCE(s.categoria, 'Hardware') categoria,
-                           s.problema, s.prioridade, s.status, s.prazo_estimado
+                    SELECT s.protocolo,
+                           ec.nome as empresa,
+                           u.nome as cliente,
+                           COALESCE(s.categoria, 'Hardware') as categoria,
+                           s.problema,
+                           s.prioridade,
+                           s.status,
+                           s.prazo_estimado
                     FROM servico s
                     JOIN empresa_cliente ec ON s.id_empresa_cliente_fk = ec.id_empresa_cliente
                     LEFT JOIN usuario u ON s.id_usuario_criador = u.id_usuario
@@ -412,7 +429,12 @@ def api_servicos_exportar():
         except mysql_errors.ProgrammingError as e:
             if getattr(e, 'errno', None) == 1054:
                 servicos = fetch_all("""
-                    SELECT s.protocolo, ec.nome empresa, s.problema, s.prioridade, s.status, s.prazo_estimado
+                    SELECT s.protocolo,
+                           ec.nome as empresa,
+                           s.problema,
+                           s.prioridade,
+                           s.status,
+                           s.prazo_estimado
                     FROM servico s
                     JOIN empresa_cliente ec ON s.id_empresa_cliente_fk = ec.id_empresa_cliente
                     ORDER BY s.data_abertura DESC
@@ -423,29 +445,61 @@ def api_servicos_exportar():
                     s['categoria'] = 'Hardware'
             else:
                 raise
+
+        import codecs
+        from datetime import datetime
+
+        def data_por_extenso(data_obj):
+            if not data_obj:
+                return 'Sem prazo'
+            try:
+                meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+                        'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+                if hasattr(data_obj, 'day'):
+                    dia = data_obj.day
+                    mes = meses[data_obj.month - 1]
+                    ano = data_obj.year
+                    return f"{dia} de {mes} de {ano}"
+                return 'Data inválida'
+            except:
+                return 'Data inválida'
+
         si = StringIO()
-        writer = csv.writer(si)
-        writer.writerow(['Protocolo', 'Empresa', 'Cliente', 'Categoria', 'Problema', 'Prioridade', 'Status', 'Prazo'])
+        writer = csv.writer(si, delimiter=',', lineterminator='\n', quoting=csv.QUOTE_ALL)
+
+        writer.writerow(['RELATÓRIO DE SERVIÇOS - IGECH TECH'])
+        writer.writerow([f'Exportado em: {datetime.now().strftime("%d/%m/%Y às %H:%M")}'])
+        writer.writerow([f'Total: {len(servicos)} registros'])
+        writer.writerow([])
+
+        writer.writerow(['Protocolo', 'Prazo', 'Status', 'Prioridade', 'Categoria', 'Empresa', 'Cliente', 'Problema'])
+
         for s in servicos:
-            prazo_str = s['prazo_estimado'].strftime('%d/%m/%Y') if s['prazo_estimado'] else '-'
             writer.writerow([
-                s['protocolo'],
-                s['empresa'],
-                s.get('cliente', 'N/A'),
-                s.get('categoria', 'Hardware'),
-                s['problema'],
-                s['prioridade'],
-                s['status'],
-                prazo_str
+                str(s.get('protocolo', '')),
+                data_por_extenso(s.get('prazo_estimado')),
+                str(s.get('status', '')),
+                str(s.get('prioridade', '')),
+                str(s.get('categoria', 'Hardware')),
+                str(s.get('empresa', '')),
+                str(s.get('cliente', '')),
+                str(s.get('problema', ''))
             ])
-        output = make_response(si.getvalue())
-        output.headers["Content-Disposition"] = "attachment; filename=servicos.csv"
+
+        csv_content = si.getvalue()
+        bom = codecs.BOM_UTF8
+
+        output = make_response(bom + csv_content.encode('utf-8'))
+        output.headers["Content-Disposition"] = "attachment; filename=relatorio_servicos.csv"
         output.headers["Content-type"] = "text/csv; charset=utf-8"
+
         return output
+
     except Exception as e:
         logger.exception("api_servicos_exportar failed")
         flash(f'Erro ao exportar: {e}', 'danger')
         return redirect(url_for('pagina.servicos'))
+
 
 @bp.route('/api/meus-servicos', methods=['GET'])
 def api_meus_servicos():

@@ -4,6 +4,7 @@
     if (!m) return;
     m.setAttribute('aria-hidden', 'false');
     m.classList.add('is-open');
+    document.body.classList.add('modal-open'); // ← ADICIONADO
     const first = m.querySelector('input, button, select, textarea, [tabindex]:not([tabindex="-1"])');
     if (first) setTimeout(() => first.focus(), 100);
     document.body.style.overflow = 'hidden';
@@ -16,6 +17,7 @@
     if (!m) return;
     m.setAttribute('aria-hidden', 'true');
     m.classList.remove('is-open');
+    document.body.classList.remove('modal-open'); // ← ADICIONADO
     document.body.style.overflow = '';
   };
 
@@ -121,18 +123,15 @@
       return false;
     }
     
-    // ✅ ENVIA DADOS DA EMPRESA E ENDEREÇO
     if (window.dadosEmpresaAPI) {
       const formCadastro = document.getElementById('formCadastro');
       const data = window.dadosEmpresaAPI;
       
-      // Remove campos antigos
       formCadastro.querySelectorAll('.empresa-api-data').forEach(h => h.remove());
       
       const email = Array.isArray(data.emails) && data.emails.length > 0 ? data.emails[0].address : '';
       const telefone = Array.isArray(data.phones) && data.phones.length > 0 ? `${data.phones[0].area}${data.phones[0].number}` : '';
       
-      // ✅ EXTRAI TIPO DE LOGRADOURO E NOME
       let tipoLogradouro = 'Rua';
       let nomeLogradouro = data.address?.street || '';
       
@@ -147,12 +146,11 @@
         }
       }
       
-      // ✅ CAMPOS CORRETOS PARA O BACKEND
       const fields = {
         'empresa_email': email,
         'empresa_telefone': telefone,
-        'empresa_logradouro': tipoLogradouro,        // ← Tipo (Rua, Avenida, etc)
-        'empresa_nome_logradouro': nomeLogradouro,   // ← Nome da rua
+        'empresa_logradouro': tipoLogradouro,
+        'empresa_nome_logradouro': nomeLogradouro,
         'empresa_numero': data.address?.number || '',
         'empresa_complemento': data.address?.details || '',
         'empresa_bairro': data.address?.district || '',
@@ -161,7 +159,6 @@
         'empresa_cep': data.address?.zip?.replace(/\D/g, '') || ''
       };
       
-      // ✅ ADICIONA CAMPOS HIDDEN AO FORMULÁRIO
       for (const [key, value] of Object.entries(fields)) {
         if (value) {
           const input = document.createElement('input');

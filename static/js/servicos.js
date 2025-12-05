@@ -1,7 +1,7 @@
 const API_BASE = '/api/servicos';
 let todosUsuarios = [];
 let servicosMock = [];
-let currentUserRole = null;  // ✅ CORRIGIDO: era 'user', agora é null
+let currentUserRole = null;
 let currentUserId = null;
 let currentUserName = '';
 let empresas = [];
@@ -17,6 +17,7 @@ function escapeHtml(s) {
   }[m]));
 }
 
+
 // ===================== CARREGAR EMPRESAS =====================
 async function carregarEmpresas() {
   try {
@@ -26,14 +27,13 @@ async function carregarEmpresas() {
       empresas = data.empresas;
     }
   } catch (error) {
-    // Silencioso
+    console.error('Erro ao carregar empresas:', error);
   }
 }
 
 // ===================== CARREGAR SERVIÇOS =====================
 async function carregarServicos() {
   try {
-    // ✅ SEMPRE usa /api/servicos - o backend decide o que mostrar
     const response = await fetch('/api/servicos');
 
     if (response.status === 401) {
@@ -46,18 +46,17 @@ async function carregarServicos() {
 
     if (response.ok && data.success) {
       servicosMock = data.servicos;
-      currentUserRole = data.user_role || 'user';  // ✅ Garante que sempre tem valor
+      currentUserRole = data.user_role || 'user';
       currentUserId = data.user_id;
       currentUserName = data.user_name;
 
-      // ✅ DEBUG - pode remover depois
       console.log('🔍 User Role:', currentUserRole);
       console.log('🔍 Total de Serviços:', servicosMock.length);
 
       renderServicosTable(servicosMock);
       atualizarResumo(servicosMock);
       atualizarIndicadorAdmin();
-      controlarBotaoNovoServico();  // ✅ Chama DEPOIS de atualizar o role
+      controlarBotaoNovoServico();
       carregarVitrine();
     } else {
       mostrarErro('Erro ao carregar serviços: ' + (data.error || 'Erro desconhecido'));
@@ -74,7 +73,6 @@ function controlarBotaoNovoServico() {
   const btnAdd = document.getElementById('btnAddServico');
   if (!btnAdd) return;
 
-  // ✅ CORRIGIDO: verifica se é admin
   if (currentUserRole === 'admin') {
     btnAdd.style.display = 'flex';
     console.log('✅ Botão "Novo Serviço" ATIVADO (admin)');
@@ -119,9 +117,8 @@ function renderServicosTable(servicos) {
   }
 
   tbody.innerHTML = servicos.map(srv => {
-    // ✅ CONTROLE DE PERMISSÕES CORRETO
-    const podeEditar = currentUserRole === 'admin';  // ← APENAS ADMIN PODE EDITAR
-    const podeExcluir = currentUserRole === 'admin'; // ← APENAS ADMIN PODE EXCLUIR
+    const podeEditar = currentUserRole === 'admin';
+    const podeExcluir = currentUserRole === 'admin';
     const nomeCliente = srv.cliente || currentUserName;
 
     const iconesCategoria = {
@@ -147,10 +144,6 @@ function renderServicosTable(servicos) {
       ? problemaCompleto.substring(0, 50) + '...'
       : problemaCompleto;
 
-    const iconVer = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
-    const iconEdit = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
-    const iconDelete = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
-
     return `
 <tr>
   <td><strong>${srv.protocolo}</strong></td>
@@ -162,11 +155,20 @@ function renderServicosTable(servicos) {
   <td><span class="status-badge status-${srv.status.replace(/ /g, "-").toLowerCase()}">${srv.status.charAt(0).toUpperCase() + srv.status.slice(1)}</span></td>
   <td>${srv.prazo ? new Date(srv.prazo).toLocaleDateString('pt-BR') : '-'}</td>
   <td>
-    <div class="table-actions">
-      <button class="btn-action btn-view" data-protocolo="${srv.protocolo}">${iconVer} Ver</button>
-      ${podeEditar ? `<button class="btn-action btn-edit" data-protocolo="${srv.protocolo}">${iconEdit} Editar</button>` : ''}
-      ${podeExcluir ? `<button class="btn-action btn-delete" data-protocolo="${srv.protocolo}">${iconDelete} Excluir</button>` : ''}
-    </div>
+   <div class="table-actions">
+  ${podeEditar ? `<button class="btn-action btn-editar" data-protocolo="${srv.protocolo}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    </svg>
+  </button>` : ''}
+  ${podeExcluir ? `<button class="btn-action btn-delete" data-protocolo="${srv.protocolo}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    </svg>
+  </button>` : ''}
+</div>
   </td>
 </tr>
     `;
@@ -174,7 +176,6 @@ function renderServicosTable(servicos) {
 
   document.getElementById('tableCount').textContent = `${servicos.length} serviços encontrados`;
 }
-
 
 // ===================== ATUALIZAR RESUMO =====================
 function atualizarResumo(servicos) {
@@ -188,6 +189,7 @@ function atualizarResumo(servicos) {
   document.getElementById('servicos-urgentes').textContent = servicos.filter(s =>
     s.prioridade === 'urgente'
   ).length;
+  
   const hoje = new Date();
   const limite7dias = new Date(hoje);
   limite7dias.setDate(limite7dias.getDate() - 7);
@@ -197,6 +199,7 @@ function atualizarResumo(servicos) {
     return dataPrazo >= limite7dias;
   }).length;
   document.getElementById('novos7dias').textContent = novos;
+  
   const concluidos = servicos.filter(s => s.status === 'concluida');
   if (concluidos.length) {
     const media = Math.round(
@@ -209,6 +212,7 @@ function atualizarResumo(servicos) {
   } else {
     document.getElementById('mediaPrazo').textContent = '-';
   }
+  
   const tops = {};
   servicos.forEach(s => {
     const problema = s.problema || 'Sem descrição';
@@ -230,6 +234,7 @@ function filtrarServicos() {
   const status = document.getElementById('filterStatus').value;
   const prioridade = document.getElementById('filterPrioridade').value;
   const categoria = document.getElementById('filterCategoria').value;
+  
   let filtrados = servicosMock.filter(srv => {
     const busca = srv.protocolo.toString().toLowerCase().includes(term)
       || srv.empresa.toLowerCase().includes(term)
@@ -241,6 +246,7 @@ function filtrarServicos() {
     const matchCategoria = !categoria || srv.categoria === categoria;
     return busca && matchStatus && matchPrio && matchCategoria;
   });
+  
   renderServicosTable(filtrados);
   document.getElementById('tableCount').textContent = `${filtrados.length} serviços encontrados`;
 }
@@ -250,8 +256,14 @@ function abrirModalNovoServico() {
   const empresasOptions = empresas.map(e =>
     `<option value="${e.id_empresa_cliente}">${escapeHtml(e.nome)}</option>`
   ).join('');
+  
+  document.body.classList.add('modal-open');
+  document.body.style.overflow = 'hidden';
+  
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
+  modal.id = 'modalServico';
+  
   modal.innerHTML = `
   <div class="modal-content">
     <div class="modal-header">
@@ -298,12 +310,14 @@ function abrirModalNovoServico() {
       </div>
     </form>
   </div>`;
+  
   document.body.appendChild(modal);
 }
 
-// ===================== FUNÇÃO PARA SALVAR NOVO SERVIÇO =====================
+// ===================== SALVAR NOVO SERVIÇO =====================
 async function salvarNovoServico(e) {
   e.preventDefault();
+  
   const dados = {
     categoria: document.getElementById('novoCategoria').value,
     id_empresa_cliente: document.getElementById('novoEmpresa').value,
@@ -311,6 +325,7 @@ async function salvarNovoServico(e) {
     prioridade: document.getElementById('novoPrioridade').value,
     prazo_estimado: document.getElementById('novoPrazo').value
   };
+  
   try {
     const response = await fetch('/api/servicos/novo', {
       method: 'POST',
@@ -334,12 +349,18 @@ async function salvarNovoServico(e) {
   }
 }
 
-// ===================== FUNÇÃO PARA VER DETALHES DE SERVIÇO =====================
+// ===================== VER DETALHES DO SERVIÇO =====================
 function verServico(protocolo) {
   const servico = servicosMock.find(s => s.protocolo == protocolo);
   if (!servico) return;
+  
+  document.body.classList.add('modal-open');
+  document.body.style.overflow = 'hidden';
+  
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
+  modal.id = 'modalServico';
+  
   modal.innerHTML = `
   <div class="modal-content">
     <div class="modal-header">
@@ -380,15 +401,22 @@ function verServico(protocolo) {
       </div>
     </div>
   </div>`;
+  
   document.body.appendChild(modal);
 }
 
-// ===================== FUNÇÃO PARA ABRIR MODAL DE EDIÇÃO =====================
+// ===================== ABRIR MODAL DE EDIÇÃO =====================
 function abrirModalEditarServico(protocolo) {
   const servico = servicosMock.find(s => s.protocolo == protocolo);
   if (!servico) return;
+  
+  document.body.classList.add('modal-open');
+  document.body.style.overflow = 'hidden';
+  
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
+  modal.id = 'modalServico';
+  
   modal.innerHTML = `
   <div class="modal-content">
     <div class="modal-header">
@@ -438,12 +466,14 @@ function abrirModalEditarServico(protocolo) {
       </div>
     </form>
   </div>`;
+  
   document.body.appendChild(modal);
 }
 
-// ===================== FUNÇÃO PARA SALVAR EDIÇÃO =====================
+// ===================== SALVAR EDIÇÃO =====================
 async function salvarEdicaoServico(e, protocolo) {
   e.preventDefault();
+  
   const dados = {
     categoria: document.getElementById('editCategoria').value,
     problema: document.getElementById('editProblema').value,
@@ -451,6 +481,7 @@ async function salvarEdicaoServico(e, protocolo) {
     status: document.getElementById('editStatus').value,
     prazo_estimado: document.getElementById('editPrazo').value
   };
+  
   try {
     const response = await fetch(`/api/servicos/${protocolo}`, {
       method: 'PUT',
@@ -474,12 +505,16 @@ async function salvarEdicaoServico(e, protocolo) {
   }
 }
 
+// ===================== FECHAR MODAL =====================
 function fecharModal() {
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow = '';
+  
   const modal = document.querySelector('.modal-overlay');
   if (modal) modal.remove();
 }
 
-// ===================== VITRINE =====================
+// ===================== CARREGAR VITRINE =====================
 async function carregarVitrine() {
   try {
     const response = await fetch('/api/servicos/vitrine');
@@ -490,25 +525,28 @@ async function carregarVitrine() {
     }
 
   } catch (error) {
-    // Silencioso
+    console.error('Erro ao carregar vitrine:', error);
   }
 }
 
 function renderVitrine(vitrine) {
   const vitrineContainer = document.getElementById('vitrineCards');
   if (!vitrineContainer) return;
+  
   const cores = {
     'Hardware': 'vitrine-blue',
     'Software': 'vitrine-cyan',
     'Redes': 'vitrine-violet',
     'Suporte': 'vitrine-green'
   };
+  
   const icones = {
     'Hardware': '🔧',
     'Software': '💻',
     'Redes': '🌐',
     'Suporte': '🎧'
   };
+  
   vitrineContainer.innerHTML = vitrine.map(cat => `
     <div class="vitrine-card ${cores[cat.categoria] || 'vitrine-blue'}">
       <div class="vitrine-icon">${icones[cat.categoria] || '📦'}</div>
@@ -537,9 +575,10 @@ function renderVitrine(vitrine) {
     </div>`).join('');
 }
 
-// ===================== EXCLUIR =====================
+// ===================== EXCLUIR SERVIÇO =====================
 async function excluirServico(protocolo) {
   if (!confirm(`Tem certeza que deseja excluir o serviço ${protocolo}?`)) return;
+  
   try {
     const response = await fetch(`/api/servicos/${protocolo}`, {
       method: 'DELETE',
@@ -578,7 +617,6 @@ function getDataFutura(dias) {
 
 // ===================== EVENT LISTENERS =====================
 document.addEventListener('DOMContentLoaded', () => {
-  // ✅ Sempre chama carregarServicos() - ela detecta automaticamente se é admin
   carregarServicos();
   carregarEmpresas();
 
@@ -598,7 +636,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = '/api/servicos/exportar';
   });
 
-  // Delegação de eventos para botões da tabela
   const tbody = document.getElementById('servicosTableBody');
   if (tbody) {
     tbody.addEventListener('click', (e) => {
@@ -610,11 +647,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (btn.classList.contains('btn-view')) {
         verServico(protocolo);
-      } else if (btn.classList.contains('btn-edit')) {
+      } else if (btn.classList.contains('btn-editar')) {
         abrirModalEditarServico(protocolo);
       } else if (btn.classList.contains('btn-delete')) {
         excluirServico(protocolo);
       }
     });
   }
+
+  document.addEventListener('click', (e) => {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal && e.target === modal) {
+      fecharModal();
+    }
+  });
 });
